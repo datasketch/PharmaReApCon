@@ -23,13 +23,16 @@ choose_cat
 choose_viz
 
 Data
+Get_Data_Api
 request_country_get_data
 request_status_get_data
 
 filter
-request_country_filter
-request_status_filter
-
+filter_
+request_country_filter_make
+request_status_filter_make
+request_country_filter_action
+request_status_filter_action
 
 Show
 request_show_map
