@@ -365,16 +365,16 @@ viz_opts <- reactive({
     #  if (is.null(r$d_viz)) return()
     # req(r$active_viz)
     # #######print(r$d_viz)
-    v <- c("line", "bar")
-    #######print("perio")
-    # #######print(stringr::str_detect(r$d_viz,"PERIODO"))
-    # if (!stringr::str_detect(r$d_viz,"PERIODO") |length(unique(r$periodoId)) == 1 ) {
-    # if (!"PERIODO" %in% names(r$d_viz) & r$active_viz!="map") {
-    #   v <- "bar"
-    # }
-
-    v <- c(v, "table","map")
-    v <- c("line", "bar","map","table")
+    # v <- c("line", "bar")
+    # #######print("perio")
+    # # #######print(stringr::str_detect(r$d_viz,"PERIODO"))
+    # # if (!stringr::str_detect(r$d_viz,"PERIODO") |length(unique(r$periodoId)) == 1 ) {
+    # # if (!"PERIODO" %in% names(r$d_viz) & r$active_viz!="map") {
+    # #   v <- "bar"
+    # # }
+    #
+    # v <- c(v, "table","map")
+    v <- c("bar","map","table")
 
     #######print(v)
     # if (nrow(r$d_viz) <= 1) v <- "table"
@@ -443,7 +443,7 @@ viz_opts <- reactive({
     # req(df())
   if (is.null(vizFrtype())) return()
     if (is.null(actual_but$active))
-    if (is.null(actual_but$active)) actual_but$active="line"
+    if (is.null(actual_but$active)) actual_but$active="bar"
     if (actual_but$active == "table") return()
     if (actual_but$active == "map") return()
     viz <- paste0("hgchmagic::", paste0("hgch_",actual_but$active, "_", vizFrtype()))
@@ -554,7 +554,7 @@ viz_opts <- reactive({
 
   output$viz <- renderUI({
     # if (is.null(actual_but$active))
-      actual_but$active="line"
+      # actual_but$active="line"
 
     if (actual_but$active == "table") {
       dataTableOutput("table_dt",  width = 800)
