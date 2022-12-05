@@ -31,6 +31,7 @@ ui <- function(request) {
                           tags$head(tags$script(src="handlers.js")),
                            uiOutput("generalFilters"),
                            uiOutput("sel_country"),
+                           uiOutput("sel_status"),
                            uiOutput("generalFilters2")),
                       div (class = "panel-body",style="flex-grow: 1; min-height: 600px;",
 
@@ -239,28 +240,15 @@ titleviz <-reactive({
 
 
 viz_opts <- reactive({
-    req(df())
-
+    # req(df())
+ print("vizpot")
     if(actual_but$active=="line" | actual_but$active=="bar"){
-    l <-
-      list(
-        data = df(),
-        title = titleviz(),
-        title_size = 15,
-        text_family = "Fira Sans",
-        title_family = "Fira Sans",
-        caption = "",
-        label_wrap_legend = 100,
-        legend_align = "center",
-        legend_verticalAlign = "top",
-        graph_type = "stacked",
-        format_sample_num = "10T",
-        format_numericSymbols = T,
-        #prefix="$",
-        tooltip = "{labelToShow}",
-        legend_maxHeight = 100,
-        background_color = "#ffffff"
-      )
+
+
+      df=request_country_get_data_graph("request")
+      l=show_map(df)
+      print(l)
+
     }else{
        l = list(df,
                map_name = "col_larg",
@@ -355,8 +343,60 @@ viz_opts <- reactive({
 
 
     selectizeInput("sel_country","Country",
-                   df %>% select(Country)  %>% as.vector(),
+                   df,
                    default_select, multiple=TRUE, width='200px')
+  })
+
+
+  output$sel_status <- renderUI({
+    default_select <- NULL
+    df <- filter_make("request","Status")
+    print("df")
+
+
+    selectizeInput("sel_status","Status",
+                   df,
+                   default_select, multiple=TRUE, width='200px')
+  })
+
+
+  possible_viz <- reactive({
+
+    #  if (is.null(r$d_viz)) return()
+    # req(r$active_viz)
+    # #######print(r$d_viz)
+    v <- c("line", "bar")
+    #######print("perio")
+    # #######print(stringr::str_detect(r$d_viz,"PERIODO"))
+    # if (!stringr::str_detect(r$d_viz,"PERIODO") |length(unique(r$periodoId)) == 1 ) {
+    # if (!"PERIODO" %in% names(r$d_viz) & r$active_viz!="map") {
+    #   v <- "bar"
+    # }
+
+    v <- c(v, "table","map")
+    v <- c("line", "bar","map","table")
+
+    #######print(v)
+    # if (nrow(r$d_viz) <= 1) v <- "table"
+    v
+  })
+
+
+  actual_but <- reactiveValues(active = NULL)
+
+  observe({
+    if (is.null(input$viz_selection)) return()
+    req(possible_viz())
+    viz_rec <- possible_viz()
+    if (input$viz_selection %in% viz_rec) {
+      actual_but$active <- input$viz_selection
+    } else {
+      actual_but$active <- viz_rec[1]
+    }
+    # #######print(actual_but$active)
+    # actual_but$active
+    # viz_f <- vizFrtype()
+
   })
 
   output$viz_icons <- renderUI({
@@ -365,95 +405,73 @@ viz_opts <- reactive({
 
 
     # #######print("icons")
-    # req(possible_viz())
+     req(possible_viz())
     # possible_viz <- possibsle_viz()
     #
     #
-    # shinyinvoer::buttonImageInput('viz_selection',
-    #                               " ",#div(class="title-data-select", "Selecciona tipo de visualización"),
-    #                               images = possible_viz,
-    #                               path = "www/viz_icons/",
-    #                               active = actual_but$active,
-    #                               imageStyle = list(shadow = TRUE,
-    #                                                 borderColor = "#ffffff",
-    #                                                 padding = "3px"))
-    #
+
+    possible_viz <- possible_viz()
+
+
+    shinyinvoer::buttonImageInput('viz_selection',
+                                  " ",#div(class="title-data-select", "Selecciona tipo de visualización"),
+                                  images = possible_viz,
+                                  path = "www/viz_icons/",
+                                  active = actual_but$active,
+                                  imageStyle = list(shadow = TRUE,
+                                                    borderColor = "#ffffff",
+                                                    padding = "3px"))
+
 
   })
 
 
 
   vizFrtype <- reactive({
-    # req(df())
-    #####print(colnames(df))
-    # df <- df()
-    # if( quest_choose() =="Aprehensiones"){
-    #       if(input$sel_valor!="cantidad"){
-    #         tp <- "CatYeaNum"
-    #         if (!"PERIODO" %in% names(df())) {
-    #         }
-    #           tp <- "CatCatNum"
-    #
-    #       }
-    #   else{
-    #
-    #
-    #         tp <- "YeaNum"
-    #         if (!"PERIODO" %in% names(df())) {
-    #           tp <- "CatNum"
-    #         }
-    #         if ("depto" %in% names(df())) {
-    #           tp <- "CatYeaNum"
-    #         }
-    #
-    #
-    #       }
-    #
+
+    tp <- "CatYeaNum"
+    # if (!"PERIODO" %in% names(d_viz)) {
+    #   tp <- "CatCatNum"
     # }
-    # else{
-    #
-    #   tp <- "YeaNum"
-    #   if (!"PERIODO" %in% names(df())) {
-    #     tp <- "CatNum"
-    #   }
-    #   if ("depto" %in% names(df())) {
-    #     tp <- "CatYeaNum"
-    #   }
-    #
-    #
-    # }
-    # ##print(tp)
-    # tp
+
+   tp
   })
 
+
   hgch_viz <- reactive({
-    # tryCatch({
-  #   req(df())
-  # if (is.null(vizFrtype())) return()
-  #   if (is.null(actual_but$active))
-  #   if (is.null(actual_but$active)) actual_but$active="line"
-  #   if (actual_but$active == "table") return()
-  #   if (actual_but$active == "map") return()
-  #   viz <- paste0("hgchmagic::", paste0("hgch_",actual_but$active, "_", vizFrtype()))
-  #   library(hgchmagic)
-  #
-  #   try({
-  #     do.call(eval(parse(text=viz)),
-  #             viz_opts()
-  #     )
-  #   }
-  #
-  #
-  #   )
+  # tryCatch({
+    # req(df())
+  if (is.null(vizFrtype())) return()
+    if (is.null(actual_but$active))
+    if (is.null(actual_but$active)) actual_but$active="line"
+    if (actual_but$active == "table") return()
+    if (actual_but$active == "map") return()
+    viz <- paste0("hgchmagic::", paste0("hgch_",actual_but$active, "_", vizFrtype()))
+    library(hgchmagic)
+
+    try({
+      do.call(eval(parse(text=viz)),
+              viz_opts()
+      )
+    }
+
+
+    )
+
+    # },
+    # error = function(cond) {
+    #   return()
+    # })
   })
 
 
 
   output$hgch_viz <- highcharter::renderHighchart({
     # tryCatch({
-    # #   req( hgch_viz())
-    # #   hgch_viz()
-    #  },
+      print(actual_but$active)
+      req( hgch_viz())
+      hgch_viz()
+     # },
     # error = function(cond) {
     #   return()
     # })
@@ -481,16 +499,16 @@ viz_opts <- reactive({
   })
 
   output$r_viz <- leaflet::renderLeaflet({
-
-    # req(r_viz())
-    # print("inviz")
-    # #req(r$InsId_band)
-    # actual_but$active = "map"
-    # # print((r_viz))
-    # # print(colnames(r$d_viz))
-    # # a = r$d_viz
-    # # print(a)
-    # r_viz()
+#
+#     req(r_viz())
+#     print("inviz")
+#     #req(r$InsId_band)
+#     # actual_but$active = "map"
+#     # print((r_viz))
+#     # print(colnames(r$d_viz))
+#     # a = r$d_viz
+#     # print(a)
+#     r_viz()
 
   })
 
@@ -534,7 +552,18 @@ viz_opts <- reactive({
   # dsmodules::downloadImageServer("download_viz", element = reactive(hgch_viz()), lib = "highcharter", formats = c("jpeg", "pdf", "png", "html"), file_prefix = "plot")
 
 
+  output$viz <- renderUI({
+    # if (is.null(actual_but$active))
+      actual_but$active="line"
 
+    if (actual_but$active == "table") {
+      dataTableOutput("table_dt",  width = 800)
+    } else if (actual_but$active == "map") {
+      leaflet::leafletOutput("r_viz", height = 600)
+    } else {#######print("drrrraw")
+      highchartOutput("hgch_viz", height = 600)
+    }
+  })
 
 
 }

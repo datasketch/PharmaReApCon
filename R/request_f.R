@@ -1,5 +1,27 @@
 # a=get_data_api("request")
 
+#' @export
+get_year <- function(df, colname_to_year){
+
+  # colname_to_year= "Submission.date..DD.MM.YYYY."
+  # df=PharmaReApCon::get_data_api("request")
+  # df$year=NULL
+  df$year = substr(as.Date(df[[colname_to_year]],format="%d/%m/%Y"), 1, 4)
+
+
+  df
+}
+
+# library(dplyr)
+# library(PharmaReApCon)
+# test_get_year = function(){
+#   dft=PharmaReApCon::get_data_api("request")
+#   dft=get_year(dft,"Submission.date..DD.MM.YYYY.")
+#    print(dft)
+# }
+#
+#
+#       test_get_year()
 #get total count by col
 #' @export
 counter_r <- function(df,colname_group1, colname_group2=NULL){
@@ -9,7 +31,7 @@ counter_r <- function(df,colname_group1, colname_group2=NULL){
     df = df %>% group_by(across(all_of(colname_group1))) %>% summarize(count =n())
   }else{
 
-    df = df %>% group_by(across(all_of(colname_group1,colname_group2))) %>% summarize(count =n())
+    df = df %>% group_by(across(all_of(colname_group1)),across(all_of(colname_group2))) %>% summarize(count =n())
   }
   df
 }
@@ -43,20 +65,32 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 # test_filter_maker()
 #
 #' @export
-request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL){
+request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL, type="line"){
+  df=get_data_api(name)
+  total =NULL
+  if(!is.null(country_fil)){
+    df =filter_r(df,"Country",country_fil)
+  }
 
-    df=get_data_api(name)
+  if(!is.null(status_fil)){
+    df =filter_r(df,"Status",status_fil)
+  }
 
-     if(!is.null(country_fil)){
-       df =filter_r(df,"Country",country_fil)
-     }
 
-    if(!is.null(status_fil)){
-      df =filter_r(df,"Status",status_fil)
-    }
+  if(type=="line"){
+    print("Intolinedata")
+    print(df)
+    df = get_year(df,"Submission.date..DD.MM.YYYY.")
+    print(df)
+    total =  counter_r(df,"Status","year")
 
-     total =  counter_r(df,"Country")
+   }
+  else{
 
+   total =  counter_r(df,"Country")
+  }
+
+  total
 }
 
 #' @export
