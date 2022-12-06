@@ -101,6 +101,8 @@ request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=N
 
   if(type=="bar"){
     total =  counter_r(df,"Status")
+    total = df_color_tree(total,"Status")
+    print(total)
     # #print("Intolinedata")
     # #print(df)
     # df = get_year(df,"Submission.date..DD.MM.YYYY.")
@@ -111,6 +113,7 @@ request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=N
   else{
     total =  counter_r(df,"Country")
 
+    total = df_color_tree(total,"Country")
   }
 
   total
@@ -138,6 +141,10 @@ request_country_get_data_map <- function(name,  country_fil=NULL, status_fil=NUL
 }
 
 
+
+
+
+
 #' @import dplyr
 #' @export
 request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=NULL){
@@ -151,15 +158,17 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
   if(!is.null(status_fil)){
     df =filter_r(df,"Status",status_fil)
   }
-
+  print("table_Data")
+  print(df)
+  print(class(df))
   df
 
 }
 
-
+#TODO group by count distinct
 #' @export
 df_color_tree <- function(df, col_to_color,pallete="Pubu"){
-  coloresFuente = df %>% dplyr::distinct(across(all_of(col_to_color)))
+  coloresFuente = df %>%  dplyr::distinct(across(all_of(col_to_color)))
   b=nrow(coloresFuente)
   color_tree = hcl.colors(b,palette = "Pubu")
   vart= vector()
@@ -215,8 +224,8 @@ show_map<- function(df){
 
 
 #' @export
-show_bar = function(df, color_by_input=NULL){
-
+show_bar = function(df, color_by_input=NULL,tooltip_t=NULL){
+print(df)
   l <-
     list(
       data = df,
@@ -229,11 +238,11 @@ show_bar = function(df, color_by_input=NULL){
       legend_align = "center",
       legend_verticalAlign = "top",
       graph_type = "stacked",
-      format_sample_num = "10T",
+      # format_sample_num = "10T",
       format_numericSymbols = T,
       color_by= color_by_input,
       #prefix="$",
-      # tooltip = "{labelToShow}",
+      tooltip = tooltip_t,
       legend_maxHeight = 100,
       background_color = "#ffffff"
     )
@@ -242,3 +251,22 @@ show_bar = function(df, color_by_input=NULL){
 
 # total_data =request_country_get_data("request")
 
+
+
+#' @export
+show_table<- function(df){
+  DT::datatable(as.data.frame(df),
+                rownames = F,
+                options = list(
+                  language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
+                  lengthChange = F,
+                  pageLength = 5,
+                  scrollX = T,
+                  scrollY = T#,
+                  #   initComplete = htmlwidgets::JS(
+                  #     "function(settings, json) {",
+                  #     "$(this.api().table().header()).css({'background-color': '#012a4a', 'color': '#fff'});",
+                  #     "}")
+                )
+  )
+}

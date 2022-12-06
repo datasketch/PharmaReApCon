@@ -262,14 +262,14 @@ viz_opts <- reactive({
 
       if(actual_but$active=="treemap"){
         df=request_country_get_data_graph("request",vart_country,vart_status,type="treemap")
-          df= df_color_tree(df,"Country", "Cividis")
-          l=show_bar(df, "Country")
+          # df= df_color_tree(df,"Country", "Cividis")
+          l=show_bar(df, "Country",paste0("Country: ","{Country} Total {count}"))
 
       }
       else{
         df=request_country_get_data_graph("request",vart_country,vart_status,type="bar")
-          df= df_color_tree(df,"Status")
-          l=show_bar(df, "Status")
+          # df= df_color_tree(df,"Status")
+          l=show_bar(df, "Status",paste0("Status: ","{Status} Total {count}"))
       }
 
 
@@ -552,43 +552,46 @@ viz_opts <- reactive({
   })
 
 
+  df_temp <- reactive({
 
+    vart_country=NULL
+    vart_status=NULL
+    if (!is.null(input$sel_country)) {
+      vart_country= vector()
+      vart_country=append(vart_country,input$sel_country)
+
+    }
+    if (!is.null(input$sel_status)) {
+      vart_status= vector()
+      vart_status=append(vart_country,input$sel_status)
+
+    }
+
+    df=request_country_get_data_table("request",vart_country,vart_status)
+    df
+  })
 
   output$table_dt <- DT::renderDataTable({
-    # #if (r$active_viz != "table") return()
-    # req(df())
-    # # df <- r$d_fil
-    # df = con %>% tbl("temporal") %>% collect()
-    # if(is.null(df)) return()
-    # DT::datatable(df,
-    #               rownames = F,
-    #               options = list(
-    #                 language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json'),
-    #                 lengthChange = F,
-    #                 pageLength = 5,
-    #                 scrollX = T,
-    #                 scrollY = T#,
-    #                 #   initComplete = htmlwidgets::JS(
-    #                 #     "function(settings, json) {",
-    #                 #     "$(this.api().table().header()).css({'background-color': '#012a4a', 'color': '#fff'});",
-    #                 #     "}")
-    #               )
-    # ) #%>%
-    # #DT::formatStyle( 0 , target= 'row',color = '#0A446B', fontSize ='13px', lineHeight='15px')
+
+
+    df=request_country_get_data_table("request")
+    # df= df_color_tree(df,"Country", "Cividis")
+    l=show_table(df)
+    l
 
   })
 
   output$descargas <- renderUI({
-    # if (is.null(actual_but$active)) return()
-    # if (actual_but$active != "table") {
-    #   dsmodules::downloadImageUI("download_viz", dropdownLabel ="Descargar", formats = c("jpeg", "pdf", "png", "html"), display = "dropdown", text = "Descargar")
-    # } else {
-    #   dsmodules::downloadTableUI("dropdown_table", dropdownLabel = "Descargar", formats = c("csv", "xlsx", "json"), display = "dropdown", text = "Descargar")
-    # }
+    if (is.null(actual_but$active)) return()
+    if (actual_but$active != "table") {
+      dsmodules::downloadImageUI("download_viz", dropdownLabel ="Descargar", formats = c("jpeg", "pdf", "png", "html"), display = "dropdown", text = "Descargar")
+    } else {
+      dsmodules::downloadTableUI("dropdown_table", dropdownLabel = "Descargar", formats = c("csv", "xlsx", "json"), display = "dropdown", text = "Descargar")
+    }
   })
 
-  # dsmodules::downloadTableServer("dropdown_table", element = reactive( df_temp() ), formats = c("csv", "xlsx", "json"))
-  # dsmodules::downloadImageServer("download_viz", element = reactive(hgch_viz()), lib = "highcharter", formats = c("jpeg", "pdf", "png", "html"), file_prefix = "plot")
+   dsmodules::downloadTableServer("dropdown_table", element = reactive( df_temp() ), formats = c("csv", "xlsx", "json"))
+   dsmodules::downloadImageServer("download_viz", element = reactive(hgch_viz()), lib = "highcharter", formats = c("jpeg", "pdf", "png", "html"), file_prefix = "plot")
 
 
   output$viz <- renderUI({
