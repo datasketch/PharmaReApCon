@@ -99,17 +99,18 @@ request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=N
   }
 
 
-  if(type=="line"){
-    #print("Intolinedata")
-    #print(df)
-    df = get_year(df,"Submission.date..DD.MM.YYYY.")
-    #print(df)
-    total =  counter_r(df,"Status","year")
+  if(type=="bar"){
+    total =  counter_r(df,"Status")
+    # #print("Intolinedata")
+    # #print(df)
+    # df = get_year(df,"Submission.date..DD.MM.YYYY.")
+    # #print(df)
+    # total =  counter_r(df,"Status","year")
 
    }
   else{
+    total =  counter_r(df,"Country")
 
-   total =  counter_r(df,"Status")
   }
 
   total
@@ -156,6 +157,33 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
 }
 
 
+#' @export
+df_color_tree <- function(df, col_to_color,pallete="Pubu"){
+  coloresFuente = df %>% dplyr::distinct(across(all_of(col_to_color)))
+  b=nrow(coloresFuente)
+  color_tree = hcl.colors(b,palette = "Pubu")
+  vart= vector()
+  vart=append(vart,color_tree)
+  coloresFuente = as.data.frame(cbind(coloresFuente,vart))
+  colnames(coloresFuente) = c(col_to_color,"...colors")
+  df =df %>% dplyr::left_join(coloresFuente, copy=TRUE)
+  df
+}
+
+
+
+# test_df_color_tree <- function(){
+#   df=get_data_api("request")
+#     df =df_color_tree(df,"Country")
+#
+# }
+# test_df_color_tree <- function(){
+#   df=get_data_api("request")
+#     df =df_color_tree(df,"Country")
+#
+# }
+
+
 
 #' @export
 show_map<- function(df){
@@ -182,8 +210,12 @@ show_map<- function(df){
    l
 }
 
+
+
+
+
 #' @export
-show_bar = function(df){
+show_bar = function(df, color_by_input=NULL){
 
   l <-
     list(
@@ -199,6 +231,7 @@ show_bar = function(df){
       graph_type = "stacked",
       format_sample_num = "10T",
       format_numericSymbols = T,
+      color_by= color_by_input,
       #prefix="$",
       # tooltip = "{labelToShow}",
       legend_maxHeight = 100,

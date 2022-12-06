@@ -244,7 +244,7 @@ viz_opts <- reactive({
   print("5")
   print(actual_but$active)
 
-    if(actual_but$active=="line" | actual_but$active=="bar"){
+    if(actual_but$active=="treemap" | actual_but$active=="bar"){
       print("vizpot")
        vart_country=NULL
        vart_status=NULL
@@ -259,8 +259,19 @@ viz_opts <- reactive({
 
        }
 
-      df=request_country_get_data_graph("request",vart_country,vart_status,type="bar")
-      l=show_bar(df)
+
+      if(actual_but$active=="treemap"){
+        df=request_country_get_data_graph("request",vart_country,vart_status,type="treemap")
+          df= df_color_tree(df,"Country", "Cividis")
+          l=show_bar(df, "Country")
+
+      }
+      else{
+        df=request_country_get_data_graph("request",vart_country,vart_status,type="bar")
+          df= df_color_tree(df,"Status")
+          l=show_bar(df, "Status")
+      }
+
 
     }else{
       print("inmap")
@@ -385,7 +396,7 @@ viz_opts <- reactive({
     # # }
     #
     # v <- c(v, "table","map")
-    v <- c("bar","map","table")
+    v <- c("map","bar","treemap","table")
 
     #######print(v)
     # if (nrow(r$d_viz) <= 1) v <- "table"
