@@ -1,5 +1,5 @@
 # a=get_data_api("request")
-
+#' @import dplyr
 #' @export
 get_year <- function(df, colname_to_year){
 
@@ -17,16 +17,18 @@ get_year <- function(df, colname_to_year){
 # test_get_year = function(){
 #   dft=PharmaReApCon::get_data_api("request")
 #   dft=get_year(dft,"Submission.date..DD.MM.YYYY.")
-#    print(dft)
+#    #print(dft)
 # }
 #
 #
 #       test_get_year()
 #get total count by col
+
+#' @import dplyr
 #' @export
 counter_r <- function(df,colname_group1, colname_group2=NULL){
-  print(colname_group1)
-  print(names(df))
+  #print(colname_group1)
+  #print(names(df))
   if(is.null(colname_group2)){
     df = df %>% group_by(across(all_of(colname_group1))) %>% summarize(count =n())
   }else{
@@ -37,19 +39,28 @@ counter_r <- function(df,colname_group1, colname_group2=NULL){
 }
 
 
+#' @import dplyr
 #' @export
 filter_r <- function(df,colname_filter_col, colname_filter_val){
-  df = df %% dply::filter(across(all_of(country_fil))  %in%  across(all_of(country_fil)))
-  df
+  # colname_filter_col="Country"
+  df$temp =  df[[colname_filter_col]]
+  # class(df$temp)
+  # colname_filter_val=c("Chile")
+  #  df=get_data_api("request")
+
+  # df =filter_r(df,"Country",c("Mexico"))
+   df = df %>% filter( temp %in% colname_filter_val) %>%  dplyr::select(!temp)
+df
 }
 
+#' @import dplyr
 #' @export
 filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 
    df=get_data_api(df_name)
-   print("entro")
+   #print("entro")
    l = df %>% dplyr::distinct(across(all_of(filter_var)))
-   print(l)
+   #print(l)
    if(orderasc==TRUE) l = l %>% dplyr::arrange(filter_var)
    if(orderdesc==TRUE) l = l %>% dplyr::arrange(desc(filter_var))
    l
@@ -64,8 +75,19 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 
 # test_filter_maker()
 #
+
+# test_filter_r = function(){
+#   df=get_data_api("request")
+#   df =filter_r(df,"Country",c("Mexico"))
+#   df
+# }
+#
+# test_filter_r()
+
+#' @import dplyr
 #' @export
 request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL, type="line"){
+  #print(country_fil)
   df=get_data_api(name)
   total =NULL
   if(!is.null(country_fil)){
@@ -78,21 +100,44 @@ request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=N
 
 
   if(type=="line"){
-    print("Intolinedata")
-    print(df)
+    #print("Intolinedata")
+    #print(df)
     df = get_year(df,"Submission.date..DD.MM.YYYY.")
-    print(df)
+    #print(df)
     total =  counter_r(df,"Status","year")
 
    }
   else{
 
-   total =  counter_r(df,"Country")
+   total =  counter_r(df,"Status")
   }
 
   total
 }
 
+
+#' @import dplyr
+#' @export
+request_country_get_data_map <- function(name,  country_fil=NULL, status_fil=NULL){
+  df=get_data_api(name)
+  total =NULL
+  if(!is.null(country_fil)){
+    df =filter_r(df,"Country",country_fil)
+  }
+
+  if(!is.null(status_fil)){
+    df =filter_r(df,"Status",status_fil)
+  }
+
+
+    total =  counter_r(df,"Country")
+
+
+  total
+}
+
+
+#' @import dplyr
 #' @export
 request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=NULL){
 
@@ -116,7 +161,7 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
 show_map<- function(df){
 
   l = list(df,
-           map_name = "col_larg",
+           # map_name = "col_larg",
            map_tiles = "CartoDB",
            title = "",
            title_size = 11,
@@ -126,9 +171,9 @@ show_map<- function(df){
            #                  "Total: {Total2}<br/>
            #                                                   PORCENTAJE: {Porcentaje}"),
            legend_show = F,
-           map_zoom = F,
-           map_min_zoom = 5,
-           map_max_zoom = 8,
+           # map_zoom = F,
+           map_min_zoom = -5,
+           map_max_zoom = 20,
            caption = "",
 
            background_color = "#ffffff",
@@ -142,8 +187,8 @@ show_bar = function(df){
 
   l <-
     list(
-      data = df(),
-      title = titleviz(),
+      data = df,
+      # title = titleviz(),
       title_size = 15,
       text_family = "Fira Sans",
       title_family = "Fira Sans",
@@ -155,7 +200,7 @@ show_bar = function(df){
       format_sample_num = "10T",
       format_numericSymbols = T,
       #prefix="$",
-      tooltip = "{labelToShow}",
+      # tooltip = "{labelToShow}",
       legend_maxHeight = 100,
       background_color = "#ffffff"
     )

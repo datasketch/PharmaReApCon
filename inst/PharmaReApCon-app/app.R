@@ -240,35 +240,46 @@ titleviz <-reactive({
 
 
 viz_opts <- reactive({
-    # req(df())
- print("vizpot")
+    req(actual_but$active)
+  print("5")
+  print(actual_but$active)
+
     if(actual_but$active=="line" | actual_but$active=="bar"){
+      print("vizpot")
+       vart_country=NULL
+       vart_status=NULL
+      if (!is.null(input$sel_country)) {
+        vart_country= vector()
+        vart_country=append(vart_country,input$sel_country)
 
+      }
+       if (!is.null(input$sel_status)) {
+         vart_status= vector()
+         vart_status=append(vart_country,input$sel_status)
 
-      df=request_country_get_data_graph("request")
-      l=show_map(df)
-      print(l)
+       }
+
+      df=request_country_get_data_graph("request",vart_country,vart_status,type="bar")
+      l=show_bar(df)
 
     }else{
-       l = list(df,
-               map_name = "col_larg",
-               map_tiles = "CartoDB",
-               title = "",
-               title_size = 11,
-               text_family = "Fira Sans",
-               title_family = "Fira Sans",
-               # tooltip = paste0("<b>{depto}</b><br/>",
-               #                  "Total: {Total2}<br/>
-               #                                                   PORCENTAJE: {Porcentaje}"),
-               legend_show = F,
-               map_zoom = F,
-               map_min_zoom = 5,
-               map_max_zoom = 8,
-               caption = "",
+      print("inmap")
+      vart_country=NULL
+      vart_status=NULL
+      if (!is.null(input$sel_country)) {
+        vart_country= vector()
+        vart_country=append(vart_country,input$sel_country)
 
-               background_color = "#ffffff",
-               palette_colors = c("#d7d1ff", "#bcb5f6", "#a19ae5", "#8880ce", "#7268b1", "#5d518f", "#4b3c69"))
+      }
+      if (!is.null(input$sel_status)) {
+        vart_status= vector()
+        vart_status=append(vart_country,input$sel_status)
 
+      }
+
+      df=request_country_get_data_map("request",vart_country,vart_status)
+      # print(df)
+      l=show_map(df)
 
     }
     l
@@ -312,7 +323,7 @@ viz_opts <- reactive({
   })
 
   ###################viz
-  possible_viz <- reactive({
+  # possible_viz <- reactive({
 #
 #     #  if (is.null(r$d_viz)) return()
 #     # req(r$active_viz)
@@ -326,12 +337,12 @@ viz_opts <- reactive({
 #     # }
 #
 #     v <- c(v, "table","map")
-#     v <- c("line", "bar","map","table")
+     # v <- c("bar","map","table")
 #
 #     #######print(v)
 #     # if (nrow(r$d_viz) <= 1) v <- "table"
 #     v
-  })
+  # })
 
 
   output$sel_country <- renderUI({
@@ -385,6 +396,8 @@ viz_opts <- reactive({
   actual_but <- reactiveValues(active = NULL)
 
   observe({
+    print("3")
+    print( actual_but$active)
     if (is.null(input$viz_selection)) return()
     req(possible_viz())
     viz_rec <- possible_viz()
@@ -400,7 +413,8 @@ viz_opts <- reactive({
   })
 
   output$viz_icons <- renderUI({
-
+    print("2")
+    print( actual_but$active)
 
 
 
@@ -429,7 +443,7 @@ viz_opts <- reactive({
 
   vizFrtype <- reactive({
 
-    tp <- "CatYeaNum"
+    tp <- "CatNum"
     # if (!"PERIODO" %in% names(d_viz)) {
     #   tp <- "CatCatNum"
     # }
@@ -438,16 +452,26 @@ viz_opts <- reactive({
   })
 
 
+
   hgch_viz <- reactive({
+    print("1")
+    print( actual_but$active)
   # tryCatch({
-    # req(df())
+    req(viz_opts())
   if (is.null(vizFrtype())) return()
     if (is.null(actual_but$active))
     if (is.null(actual_but$active)) actual_but$active="bar"
     if (actual_but$active == "table") return()
     if (actual_but$active == "map") return()
-    viz <- paste0("hgchmagic::", paste0("hgch_",actual_but$active, "_", vizFrtype()))
-    library(hgchmagic)
+    #
+    #     viz <- paste0("lfltmagic::", "lflt_choropleth_GnmNum") # TODO update with active_viz and vi type
+    #
+    # }
+    # else{
+
+            viz <- paste0("hgchmagic::", paste0("hgch_",actual_but$active, "_", vizFrtype()))
+            library(hgchmagic)
+    # }
 
     try({
       do.call(eval(parse(text=viz)),
@@ -468,6 +492,7 @@ viz_opts <- reactive({
 
   output$hgch_viz <- highcharter::renderHighchart({
     # tryCatch({
+       print("-1")
       print(actual_but$active)
       req( hgch_viz())
       hgch_viz()
@@ -480,18 +505,21 @@ viz_opts <- reactive({
 
   r_viz <- reactive({
     # tryCatch({
-    #   req(df())
+      req(viz_opts())
     #
     #   print("llego")
-    #   if (is.null(vizFrtype())) return()
-    #   if (actual_but$active == "line") return()
-    #   if (actual_but$active == "table") return()
-    #   viz <- paste0("lfltmagic::", "lflt_choropleth_GnmNum")
-    #   library(lfltmagic)
-    #   suppressWarnings(
-    #     do.call(eval(parse(text=viz)),
-    #             viz_opts()
-    #     ))
+    print("-2")
+    print( actual_but$active)
+      if (is.null(vizFrtype())) return()
+       if (actual_but$active == "bar") return()
+        if (actual_but$active == "table") return()
+      print("LF")
+      viz <- paste0("lfltmagic::", "lflt_choropleth_GnmNum")
+      library(lfltmagic)
+      suppressWarnings(
+        do.call(eval(parse(text=viz)),
+                viz_opts()
+        ))
     # # },
     # error = function(cond) {
     #   return()
@@ -500,15 +528,15 @@ viz_opts <- reactive({
 
   output$r_viz <- leaflet::renderLeaflet({
 #
-#     req(r_viz())
+     req(r_viz())
 #     print("inviz")
-#     #req(r$InsId_band)
-#     # actual_but$active = "map"
-#     # print((r_viz))
-#     # print(colnames(r$d_viz))
-#     # a = r$d_viz
-#     # print(a)
-#     r_viz()
+    #req(r$InsId_band)
+    # actual_but$active = "map"
+    # print((r_viz))
+    # print(colnames(r$d_viz))
+    # a = r$d_viz
+    # print(a)
+    r_viz()
 
   })
 
@@ -553,14 +581,18 @@ viz_opts <- reactive({
 
 
   output$viz <- renderUI({
-    # if (is.null(actual_but$active))
-      # actual_but$active="line"
+    print("-3")
+    print( actual_but$active)
+     if (is.null(actual_but$active))
+       actual_but$active="bar"
 
     if (actual_but$active == "table") {
       dataTableOutput("table_dt",  width = 800)
     } else if (actual_but$active == "map") {
       leaflet::leafletOutput("r_viz", height = 600)
-    } else {#######print("drrrraw")
+    } else {print("drrrraw")
+
+
       highchartOutput("hgch_viz", height = 600)
     }
   })

@@ -9,7 +9,37 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
-Depends: 
-    R (>= 2.10)
+RoxygenNote: 7.2.2
+epends: 
+    R (>= 4.1),
+    tidyverse
+Imports: 
+    config (>= 0.3.1),
+    dplyr,
+    RSQLite,
+    dsmodules (>= 0.5.6),
+    DT,
+    golem (>= 0.3.3),
+    hgchmagic (>= 1.0.0),
+    highcharter,
+    htmlwidgets,
+    leaflet,
+    lfltmagic (>= 0.1.0),
+    lubridate,
+    parmesan (>= 0.6.1),
+    purrr,
+    shiny (>= 1.7.2),
+    shinybusy,
+    shinyinvoer (>= 0.1.0),
+    shinyjs,
+    sitools,
+    shinyWidgets,
+    shinypanels,
+    webshot2
+Remotes: 
+    datasketch/dsmodules,
+    datasketch/hgchmagic,
+    datasketch/lfltmagic,
+    datasketch/parmesan,
+    datasketch/shinyinvoer
 LazyData: true
