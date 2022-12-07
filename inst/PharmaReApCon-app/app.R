@@ -507,6 +507,8 @@ viz_opts <- reactive({
     req(quest_choose())
     vart_country=NULL
     vart_status=NULL
+    vart_supplier=NULL
+    vart_vaccine=NULL
     if (!is.null(filter_viz$country)) {
       vart_country= vector()
       vart_country=append(vart_country,filter_viz$country)
@@ -531,14 +533,15 @@ viz_opts <- reactive({
     }
 
 
-    df=request_country_get_data_table(quest_choose(),vart_country,vart_status)
+    df=request_country_get_data_table(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine)
     df
   })
 
   output$table_dt <- DT::renderDataTable({
     req(quest_choose())
-    df=request_country_get_data_table(quest_choose())
-    l=show_table(df)
+    req(df_temp())
+    # df=request_country_get_data_table(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine)
+    l=show_table(df_temp())
     l
 
   })
