@@ -1,4 +1,4 @@
-#TODO: translate to utils the generasl functions
+#TODO: translate to utils the general functions
 
 # a=get_data_api("request")
 #' @import dplyr
@@ -15,7 +15,7 @@ get_year <- function(df, colname_to_year){
 # test_get_year = function(){
 #   dft=PharmaReApCon::get_data_api("request")
 #   dft=get_year(dft,"Submission.date..DD.MM.YYYY.")
-#    #print(dft)
+#    ##print(dft)
 # }
 #
 #
@@ -26,8 +26,8 @@ get_year <- function(df, colname_to_year){
 #' @import dplyr
 #' @export
 counter_r <- function(df,colname_group1, colname_group2=NULL){
-  #print(colname_group1)
-  #print(names(df))
+  ##print(colname_group1)
+  ##print(names(df))
   if(is.null(colname_group2)){
     df = df %>% group_by(across(all_of(colname_group1))) %>% summarize(count =n())
   }else{
@@ -52,9 +52,8 @@ df
 filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 
    df=get_data_api(df_name)
-   #print("entro")
    l = df %>% dplyr::distinct(across(all_of(filter_var)))
-   #print(l)
+
    if(orderasc==TRUE) l = l %>% dplyr::arrange(filter_var)
    if(orderdesc==TRUE) l = l %>% dplyr::arrange(desc(filter_var))
    l
@@ -81,7 +80,7 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 #' @import dplyr
 #' @export
 request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL, type="line"){
-  #print(country_fil)
+
   df=get_data_api(name)
   total =NULL
   if(!is.null(country_fil)){
@@ -96,12 +95,6 @@ request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=N
   if(type=="bar"){
     total =  counter_r(df,"Status")
     total = df_color_tree(total,"Status")
-    print(total)
-    # #print("Intolinedata")
-    # #print(df)
-    # df = get_year(df,"Submission.date..DD.MM.YYYY.")
-    # #print(df)
-    # total =  counter_r(df,"Status","year")
 
    }
   else{
@@ -136,8 +129,6 @@ request_country_get_data_map <- function(name,  country_fil=NULL, status_fil=NUL
 
 
 
-
-
 #' @import dplyr
 #' @export
 request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=NULL){
@@ -151,9 +142,6 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
   if(!is.null(status_fil)){
     df =filter_r(df,"Status",status_fil)
   }
-  print("table_Data")
-  print(df)
-  print(class(df))
   df
 
 }
@@ -216,7 +204,6 @@ show_map<- function(df){
 
 #' @export
 show_bar = function(df, color_by_input=NULL,tooltip_t=NULL){
-print(df)
   l <-
     list(
       data = df,
@@ -263,7 +250,6 @@ show_table<- function(df){
 
 #' @export
 html_table_block <- function(da){
-
   v <- vector()
   list_temp2 <- ""
   for(j in 1:nrow(da)){
@@ -271,7 +257,6 @@ html_table_block <- function(da){
     for(i in 1:ncol(da)){
      v  <-append(v,paste0( colnames(da[i]),": ", da[j,i]))
     }
-    # list_temp <-NULL
     list_temp <- paste(v, "</BR>",collapse = " ")
     list_temp2 <- paste(list_temp2,list_temp, "</BR> </BR>")
   }

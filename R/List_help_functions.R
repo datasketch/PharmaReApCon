@@ -23,9 +23,11 @@ choose_cat
 choose_viz
 
 Data
-Get_Data_Api
-request_country_get_data
-request_status_get_data
+Get_Data_Api: Get data from independet source
+get_year: take year from date
+request_country_get_data: Get data - datatable
+request_status_get_graph: Get data - Bar, treemap
+request_status_get_graph: Get data - map
 
 filter
 filter_
