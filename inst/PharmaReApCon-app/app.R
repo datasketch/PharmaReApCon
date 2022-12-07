@@ -224,7 +224,7 @@ viz_opts <- reactive({
         df=request_country_get_data_graph(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine, type="treemap")
 
           l=show_bar(df, "Country",paste0("Country: ","{Country} Total {count}"))
-        # print(l)
+
 
       }
       else{
@@ -243,7 +243,7 @@ viz_opts <- reactive({
 
 
       df=request_country_get_data_map(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine)
-      # #print(df)
+
       l=show_map(df)
 
     }
@@ -441,7 +441,7 @@ viz_opts <- reactive({
 
 
   hgch_viz <- reactive({
-  #tryCatch({
+  tryCatch({
     req(quest_choose())
     req(viz_opts())
     if (is.null(vizFrtype())) return()
@@ -458,10 +458,10 @@ viz_opts <- reactive({
       )
     })
 
-    # },
-    # error = function(cond) {
-    #   return()
-    # })
+    },
+    error = function(cond) {
+      return()
+    })
   })
 
 
