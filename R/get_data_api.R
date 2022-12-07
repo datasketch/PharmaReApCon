@@ -9,5 +9,12 @@ get_data_api <- function(name,selector=NULL){
     rm(request)
   }
 
+  if(name=="appeals"){
+
+    load("data/appeals.rda")
+    result=appeals
+    rm(appeals)
+  }
+
  result
 }

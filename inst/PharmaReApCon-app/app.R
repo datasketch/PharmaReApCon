@@ -30,10 +30,18 @@ ui <- function(request) {
                   div(class = "panel top-malibu",
                       div(style = "max-height: 1000px; !important; margin-bottom: 3%;",
                           tags$head(tags$script(src="handlers.js")),
+                          tags$script(' document.getElementById("request").onclick = function() {
+                          alert("intr");
+                                  Shiny.onInputChange("sel_country", "");
+                                  Shiny.onInputChange("sel_status", ""); }; '),
+
                            uiOutput("generalFilters"),
                            uiOutput("sel_country"),
                            uiOutput("sel_status"),
-                           uiOutput("generalFilters2")),
+                           uiOutput("generalFilters2"),
+                          uiOutput("sel_country_ap"),
+                          uiOutput("sel_status_ap"),),
+
                       div (class = "panel-body",style="flex-grow: 1; min-height: 600px;",
 
                            uiOutput("sel_depto"),
@@ -103,8 +111,8 @@ server <- function(input, output) {
       shiny::actionButton(inputId = df[z,]$id, label = df[z,]$questions, class = "needed")# %>%
 
     })
-    l[[1]] <- gsub("needed", "needed basic_active", l[[1]])
-    l[[1]] <- htmltools::HTML(paste0(paste(l[[1]], collapse = '')))
+    # l[[1]] <- gsub("needed", "needed basic_active", l[[1]])
+    # l[[1]] <- htmltools::HTML(paste0(paste(l[[1]], collapse = '')))
 
     l
   }
@@ -118,27 +126,35 @@ server <- function(input, output) {
      shiny::actionButton(inputId = df[z,]$id, label = df[z,]$questions, class = "needed")# %>%
 
     })
-    l[[1]] <- gsub("needed", "needed basic_active", l[[1]])
-    l[[1]] <- htmltools::HTML(paste0(paste(l[[1]], collapse = '')))
+    # l[[1]] <- gsub("needed", "needed basic_active", l[[1]])
+    # l[[1]] <- htmltools::HTML(paste0(paste(l[[1]], collapse = '')))
 
     l
   }
 
   output$generalFilters <- renderUI({
-    question_buttons1(c("Request"),
+    question_buttons1(c("request"),
                      c( "Request"))
 
     })
 
-    output$generalFilters2 <- renderUI({
-      question_buttons1(c( "Appeals"),
+   output$generalFilters2 <- renderUI({
+      question_buttons1(c( "appeals"),
                         c( "Appeals"))
 
       })
 
 
-   uest_choose <- reactive({
-
+  quest_choose <- reactive({
+    last_btn <- input$last_click
+    # print("lassst")
+    # print(last_btn)
+    # # input$sel_country=NULL
+    # # input$sel_status=NULL
+    # # if(input$sel_valor) input$sel_valor="cantidad"
+    # # if (is.null(last_btn)) last_btn <- "Request"
+    # print(last_btn)
+    last_btn
   })
 
 
@@ -149,30 +165,34 @@ titleviz <-reactive({
 
 
 viz_opts <- reactive({
+    req(quest_choose())
     req(actual_but$active)
+    print(actual_but$active)
 
     if(actual_but$active=="treemap" | actual_but$active=="bar"){
        vart_country=NULL
        vart_status=NULL
-    if (!is.null(input$sel_country)) {
+
+    if (!is.null(filter_viz$country)) {
         vart_country= vector()
-        vart_country=append(vart_country,input$sel_country)
+        vart_country=append(vart_country,filter_viz$country)
 
       }
-     if (!is.null(input$sel_status)) {
+     if (!is.null(filter_viz$status)) {
          vart_status= vector()
-         vart_status=append(vart_country,input$sel_status)
+         vart_status=append(vart_country,filter_viz$status)
 
        }
 
 
       if(actual_but$active=="treemap"){
-        df=request_country_get_data_graph("request",vart_country,vart_status,type="treemap")
+
+        df=request_country_get_data_graph(quest_choose(),vart_country,vart_status,type="treemap")
           l=show_bar(df, "Country",paste0("Country: ","{Country} Total {count}"))
 
       }
       else{
-        df=request_country_get_data_graph("request",vart_country,vart_status,type="bar")
+        df=request_country_get_data_graph(quest_choose(),vart_country,vart_status,type="bar")
           l=show_bar(df, "Status",paste0("Status: ","{Status} Total {count}"))
       }
 
@@ -181,22 +201,23 @@ viz_opts <- reactive({
     else{
       vart_country=NULL
       vart_status=NULL
-      if (!is.null(input$sel_country)) {
+      if (!is.null(filter_viz$country)) {
         vart_country= vector()
-        vart_country=append(vart_country,input$sel_country)
+        vart_country=append(vart_country,filter_viz$country)
 
       }
-      if (!is.null(input$sel_status)) {
+      if (!is.null(filter_viz$status)) {
         vart_status= vector()
-        vart_status=append(vart_country,input$sel_status)
+        vart_status=append(vart_country,filter_viz$status)
 
       }
 
-      df=request_country_get_data_map("request",vart_country,vart_status)
+      df=request_country_get_data_map(quest_choose(),vart_country,vart_status)
       # #print(df)
       l=show_map(df)
 
     }
+    print(df)
     l
   })
 
@@ -208,21 +229,66 @@ viz_opts <- reactive({
 
   output$sel_country <- renderUI({
     default_select <- NULL
-    df <- filter_make("request","Country")
-    selectizeInput("sel_country","Country",
-                   df,
-                   default_select, multiple=TRUE, width='200px')
+    req(quest_choose())
+
+
+    if(quest_choose()=="request"){
+      df <- filter_make("request","Country")
+
+
+
+     selectizeInput("sel_country","Country",
+                     df,
+                     default_select, multiple=TRUE, width='200px')
+    }
+
   })
 
 
   output$sel_status <- renderUI({
+    req(quest_choose())
     default_select <- NULL
-    df <- filter_make("request","Status")
-    selectizeInput("sel_status","Status",
-                   df,
-                   default_select, multiple=TRUE, width='200px')
+    if(quest_choose()=="request"){
+      df <- filter_make("request","Status")
+      selectizeInput("sel_status","Status",
+                     df,
+                     default_select, multiple=TRUE, width='200px')
+   }
+
   })
 
+
+
+  output$sel_country_ap <- renderUI({
+    default_select <- NULL
+    req(quest_choose())
+
+    if(quest_choose()=="appeals"){
+
+      df <- filter_make("appeals","Country")
+
+
+    selectizeInput("sel_country_ap","Country",
+                   df,
+                   default_select, multiple=TRUE, width='200px')
+    }
+
+  })
+
+
+  output$sel_status_ap <- renderUI({
+    req(quest_choose())
+    default_select <- NULL
+    if(quest_choose()=="appeals"){
+
+      df <- filter_make("appeals","Status")
+
+     selectizeInput("sel_status_ap","Status",
+                   df,
+                   default_select, multiple=TRUE, width='200px')
+    }
+
+  })
 
   possible_viz <- reactive({
     v <- c("map","bar","treemap","table")
@@ -231,6 +297,8 @@ viz_opts <- reactive({
 
 
   actual_but <- reactiveValues(active = NULL)
+  filter_viz <- reactiveValues(country = NULL, status=NULL)
+
 
   observe({
     if (is.null(input$viz_selection)) return()
@@ -240,6 +308,16 @@ viz_opts <- reactive({
       actual_but$active <- input$viz_selection
     } else {
       actual_but$active <- viz_rec[1]
+    }
+
+    req(quest_choose())
+    if(quest_choose()=="request"){
+      filter_viz$country=input$sel_country
+      filter_viz$status=input$sel_status
+    }
+    if(quest_choose()=="appeals"){
+      filter_viz$country=input$sel_country_ap
+      filter_viz$status=input$sel_status_ap
     }
   })
 
@@ -272,6 +350,7 @@ viz_opts <- reactive({
 
   hgch_viz <- reactive({
   tryCatch({
+    req(quest_choose())
     req(viz_opts())
     if (is.null(vizFrtype())) return()
     if (is.null(actual_but$active)) actual_but$active="map"
@@ -333,28 +412,27 @@ viz_opts <- reactive({
 
 
   df_temp <- reactive({
-
+    req(quest_choose())
     vart_country=NULL
     vart_status=NULL
-    if (!is.null(input$sel_country)) {
+    if (!is.null(filter_viz$country)) {
       vart_country= vector()
-      vart_country=append(vart_country,input$sel_country)
+      vart_country=append(vart_country,filter_viz$country)
 
     }
-    if (!is.null(input$sel_status)) {
+    if (!is.null(filter_viz$status)) {
       vart_status= vector()
-      vart_status=append(vart_country,input$sel_status)
+      vart_status=append(vart_country,filter_viz$status)
 
     }
 
-    df=request_country_get_data_table("request",vart_country,vart_status)
+    df=request_country_get_data_table(quest_choose(),vart_country,vart_status)
     df
   })
 
   output$table_dt <- DT::renderDataTable({
-
-
-    df=request_country_get_data_table("request")
+    req(quest_choose())
+    df=request_country_get_data_table(quest_choose())
     l=show_table(df)
     l
 
