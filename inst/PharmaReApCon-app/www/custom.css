@@ -5,6 +5,13 @@ html, body {
   color: #3A3C6A !important;
 }
 
+
+
+.shinybusy, .shinybusy-ready {
+ top: 30% !important;
+ right: 50% !important;
+}
+
 .layout-container {
     display: flex;
     flex-direction: column;
@@ -117,7 +124,7 @@ height: 30px !important;
  margin-left: 6px;
  margin-right: 2px;
  margin-top: 3px;
- max-width: 40%;
+ max-width: 90%;
  text-align: left;
  white-space: normal;
  width: 100%;
@@ -194,4 +201,20 @@ border-radius: 11px;
   height: 15px;
 }
 
+
+
+.panel-header_right{
+  width: 500px;
+}
+.flex-item-left {
+
+  padding: 10px;
+  flex: 50%;
+}
+
+.flex-item-right {
+
+  padding: 10px;
+  flex: 50%;
+}
 

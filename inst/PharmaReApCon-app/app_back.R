@@ -21,55 +21,81 @@ ui <- function(request) {
       tags$link(rel="stylesheet", type="text/css", href="custom.css")
     ),
     # Leave this function for adding external resources
-    shinypanels::panelsPage(
-      shinypanels::panel(title = "FILTROS",
-                         id = "azul",
-                         width = 250,
-                           body = div(
-                             tags$head(tags$script(src="handlers.js")),
-                           div(style = "!important;margin-bottom: 1%;",
-                               uiOutput("generalFilters"),
-                               uiOutput("sel_country"),
-                               uiOutput("sel_status"),
-                               uiOutput("generalFilters2"),
-                               uiOutput("sel_country_ap"),
-                               uiOutput("sel_status_ap"),
-                               uiOutput("generalFilters3"),
-                               uiOutput("sel_country_ct"),
-                               uiOutput("sel_supplier_ct"),
-                               uiOutput("sel_vaccine_ct")
-
-                               # , shiny::actionButton("todas2", "Tooltip on the left"),
-                               #spsComps:: bsTip("primary", status = "primary")
 
 
+    fluidPage({
+      div(class = "layout-container",
+          div(class = "layout-panels",
+              div(class = "app-container",
+                  div(class = "panel top-malibu",
+                      div(style = "max-height: 1000px; !important; margin-bottom: 3%;",
+                          tags$head(tags$script(src="handlers.js")),
+                          tags$script(' document.getElementById("request").onclick = function() {
+                          alert("intr");
+                                  Shiny.onInputChange("sel_country", "");
+                                  Shiny.onInputChange("sel_status", ""); }; '),
+
+                           uiOutput("generalFilters"),
+                           uiOutput("sel_country"),
+                           uiOutput("sel_status"),
+                           uiOutput("generalFilters2"),
+                           uiOutput("sel_country_ap"),
+                           uiOutput("sel_status_ap"),
+                           uiOutput("generalFilters3"),
+                           uiOutput("sel_country_ct"),
+                           uiOutput("sel_supplier_ct"),
+                           uiOutput("sel_vaccine_ct")
+
+                          ),
+
+                      div (class = "panel-body",style="flex-grow: 1; min-height: 600px;",
+
+                           uiOutput("sel_depto"),
+                           uiOutput("sel_fecha_inspeccion"),
+                           uiOutput("sel_establecimiento"),
+                           uiOutput("sel_fecha_aprenhension"),
+                           uiOutput("sel_cierre_establecimiento"),
+                           uiOutput("sel_marca"),
+                           uiOutput("sel_producto"),
+                          # uiOutput("sel_operativo"),
+                           uiOutput("sel_valor"),
+                           uiOutput("sel_periodo")
+                      )),
+                  div(class = "panel",
+                      div (class = "panel-body",
+                           div(style="flex-grow: 1; min-width: 600px;",
+                               div(class = "head-viz",
+                                   div(style = "display:flex;gap:30px;margin-bottom: 20px;align-items: flex-end;",
+                                       "VISUALIZACIÓN",
+                                       uiOutput("viz_icons")
+                                   ),
+                                   uiOutput("descargas")
+                               ),
+                               div(class = "viz-nucleo", style="min-height: 600px;",
+                                   uiOutput("viz")
+                               )
                            )
-                         )
-      ),
-      shinypanels::panel(title = "",
-                         id = "naranja",
-                         header_right = div(class="flex-container",style="display:flex;",
-                                            div(class="flex-item-left",uiOutput("viz_icons")),
-                                            div(class="flex-item-right",uiOutput("descargas"))
-                         ),
-                         can_collapse = FALSE,
-                         color = "chardonnay",
-                         body = div(shinybusy::add_busy_spinner(spin = "fading-circle"),
-                                    uiOutput("viz")
-                         )
-      ),
-      shinypanels::panel(title = "",
-                         id="verde",
-                         width = 300,
-                         body=
-                         div(style="flex-grow: 1; max-width: 300px;overflow: scroll;max-height: 620px",
-                             htmlOutput("side_table")
-                         )
+                      )),
+                  div(class = "panel",
+                      div (class = "panel-body",
+                           div(style="flex-grow: 1;",
+                               div(style = "display:block;",
+                                   div(class = "viz-center",
+                                       div(style="flex-grow: 1; max-width: 320px;overflow: scroll;max-height: 620px",
+                                         htmlOutput("side_table")
 
+
+                                       )
+                                   )
+
+                               )
+                           )
+                      )
+                  )
+              )
+          )
       )
-    )
-
-
+    })
   )
 }
 
