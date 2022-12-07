@@ -68,28 +68,14 @@ ui <- function(request) {
                       )),
                   div(class = "panel",
                       div (class = "panel-body",
-                           div(style="flex-grow: 1; min-width: 320px;",
+                           div(style="flex-grow: 1;",
                                div(style = "display:block;",
                                    div(class = "viz-center",
-                                       div(
-                                         uiOutput("downMap"),
-                                         leaflet::leafletOutput("map_viz", width = 300, height = 300),
-                                         uiOutput("infoClickMap")
+                                       div(style="flex-grow: 1; max-width: 320px;overflow: scroll;max-height: 620px",
+                                         htmlOutput("side_table")
+
+
                                        )
-                                   ),
-                                   div(class = "viz-center",
-                                       div(
-
-                                         uiOutput("downTree"),
-                                         uiOutput("vizbar_tree")),
-                                         uiOutput("infoClickTree")
-                                   ),
-
-                                   div(class = "viz-center",
-                                       div(
-                                         uiOutput("downBar"),
-                                         uiOutput("vizbar_vizl")),
-                                       uiOutput("infoClickBar")
                                    )
 
                                )
@@ -611,6 +597,12 @@ viz_opts <- reactive({
     }
   })
 
+
+  output$side_table <- renderUI({
+    req(df_temp())
+    (html_table_block(df_temp()))
+
+    })
 
 }
 

@@ -1,13 +1,11 @@
+#TODO: translate to utils the generasl functions
+
 # a=get_data_api("request")
 #' @import dplyr
 #' @export
 get_year <- function(df, colname_to_year){
 
-  # colname_to_year= "Submission.date..DD.MM.YYYY."
-  # df=PharmaReApCon::get_data_api("request")
-  # df$year=NULL
   df$year = substr(as.Date(df[[colname_to_year]],format="%d/%m/%Y"), 1, 4)
-
 
   df
 }
@@ -23,6 +21,7 @@ get_year <- function(df, colname_to_year){
 #
 #       test_get_year()
 #get total count by col
+
 
 #' @import dplyr
 #' @export
@@ -42,16 +41,11 @@ counter_r <- function(df,colname_group1, colname_group2=NULL){
 #' @import dplyr
 #' @export
 filter_r <- function(df,colname_filter_col, colname_filter_val){
-  # colname_filter_col="Country"
-  df$temp =  df[[colname_filter_col]]
-  # class(df$temp)
-  # colname_filter_val=c("Chile")
-  #  df=get_data_api("request")
-
-  # df =filter_r(df,"Country",c("Mexico"))
-   df = df %>% filter( temp %in% colname_filter_val) %>%  dplyr::select(!temp)
+   df$temp =  df[[colname_filter_col]]
+  df = df %>% filter( temp %in% colname_filter_val) %>%  dplyr::select(!temp)
 df
 }
+
 
 #' @import dplyr
 #' @export
@@ -132,7 +126,6 @@ request_country_get_data_map <- function(name,  country_fil=NULL, status_fil=NUL
   if(!is.null(status_fil)){
     df =filter_r(df,"Status",status_fil)
   }
-
 
     total =  counter_r(df,"Country")
 
@@ -221,8 +214,6 @@ show_map<- function(df){
 
 
 
-
-
 #' @export
 show_bar = function(df, color_by_input=NULL,tooltip_t=NULL){
 print(df)
@@ -263,10 +254,27 @@ show_table<- function(df){
                   pageLength = 5,
                   scrollX = T,
                   scrollY = T#,
-                  #   initComplete = htmlwidgets::JS(
-                  #     "function(settings, json) {",
-                  #     "$(this.api().table().header()).css({'background-color': '#012a4a', 'color': '#fff'});",
-                  #     "}")
+
                 )
   )
+}
+
+
+
+#' @export
+html_table_block <- function(da){
+
+  v <- vector()
+  list_temp2 <- ""
+  for(j in 1:nrow(da)){
+    v <-NULL
+    for(i in 1:ncol(da)){
+     v  <-append(v,paste0( colnames(da[i]),": ", da[j,i]))
+    }
+    # list_temp <-NULL
+    list_temp <- paste(v, "</BR>",collapse = " ")
+    list_temp2 <- paste(list_temp2,list_temp, "</BR> </BR>")
+  }
+
+  list_temp2 <- HTML(list_temp2)
 }
