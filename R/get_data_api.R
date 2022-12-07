@@ -16,5 +16,13 @@ get_data_api <- function(name,selector=NULL){
     rm(appeals)
   }
 
+
+  if(name=="contracts"){
+
+    load("data/contracts.rda")
+    result=contracts
+    rm(contracts)
+  }
+
  result
 }

@@ -39,8 +39,14 @@ ui <- function(request) {
                            uiOutput("sel_country"),
                            uiOutput("sel_status"),
                            uiOutput("generalFilters2"),
-                          uiOutput("sel_country_ap"),
-                          uiOutput("sel_status_ap"),),
+                           uiOutput("sel_country_ap"),
+                           uiOutput("sel_status_ap"),
+                           uiOutput("generalFilters3"),
+                           uiOutput("sel_country_ct"),
+                           uiOutput("sel_supplier_ct"),
+                           uiOutput("sel_vaccine_ct")
+
+                          ),
 
                       div (class = "panel-body",style="flex-grow: 1; min-height: 600px;",
 
@@ -127,6 +133,21 @@ server <- function(input, output) {
     l
   }
 
+
+  question_buttons3 <- function(ids = NULL, labels = NULL, tooltips=NULL, ...) {
+    if (is.null(ids)) stop("Please enter identifiers for each question")
+    if (is.null(labels)) stop("Please enter labels for each question")
+
+    df <- data.frame(id = ids, questions = labels)
+    l <- purrr::map(1:nrow(df), function(z){
+      shiny::actionButton(inputId = df[z,]$id, label = df[z,]$questions, class = "needed")# %>%
+
+    })
+    # l[[1]] <- gsub("needed", "needed basic_active", l[[1]])
+    # l[[1]] <- htmltools::HTML(paste0(paste(l[[1]], collapse = '')))
+
+    l
+  }
   output$generalFilters <- renderUI({
     question_buttons1(c("request"),
                      c( "Request"))
@@ -139,6 +160,12 @@ server <- function(input, output) {
 
       })
 
+
+   output$generalFilters3 <- renderUI({
+     question_buttons1(c( "contracts"),
+                       c( "Contracts details"))
+
+   })
 
   quest_choose <- reactive({
     last_btn <- input$last_click
@@ -162,57 +189,65 @@ titleviz <-reactive({
 viz_opts <- reactive({
     req(quest_choose())
     req(actual_but$active)
-    print(actual_but$active)
 
-    if(actual_but$active=="treemap" | actual_but$active=="bar"){
-       vart_country=NULL
-       vart_status=NULL
+    vart_country=NULL
+    vart_status=NULL
+    vart_supplier=NULL
+    vart_vaccine=NULL
 
     if (!is.null(filter_viz$country)) {
-        vart_country= vector()
-        vart_country=append(vart_country,filter_viz$country)
+      vart_country= vector()
+      vart_country=append(vart_country,filter_viz$country)
 
-      }
-     if (!is.null(filter_viz$status)) {
-         vart_status= vector()
-         vart_status=append(vart_country,filter_viz$status)
+    }
+    if (!is.null(filter_viz$status)) {
+      vart_status= vector()
+      vart_status=append(vart_status,filter_viz$status)
 
-       }
+    }
+    if (!is.null(filter_viz$supplier)) {
+      vart_supplier= vector()
+      vart_supplier=append(vart_supplier,filter_viz$supplier)
+
+    }
+
+    if (!is.null(filter_viz$vaccine)) {
+      vart_vaccine= vector()
+      vart_vaccine=append(vart_vaccine,filter_viz$vaccine)
+
+    }
+    if(actual_but$active=="treemap" | actual_but$active=="bar"){
 
 
       if(actual_but$active=="treemap"){
 
-        df=request_country_get_data_graph(quest_choose(),vart_country,vart_status,type="treemap")
+        df=request_country_get_data_graph(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine, type="treemap")
+
           l=show_bar(df, "Country",paste0("Country: ","{Country} Total {count}"))
+        # print(l)
 
       }
       else{
-        df=request_country_get_data_graph(quest_choose(),vart_country,vart_status,type="bar")
-          l=show_bar(df, "Status",paste0("Status: ","{Status} Total {count}"))
+        df=request_country_get_data_graph(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine,type="bar")
+          if(quest_choose()!="contract") {
+            l=show_bar(df, "Status",paste0("Status: ","{Status} Total {count}"))
+          }
+        else{
+          l=show_bar(df, "Vaccine")
+          }
       }
 
 
     }
     else{
-      vart_country=NULL
-      vart_status=NULL
-      if (!is.null(filter_viz$country)) {
-        vart_country= vector()
-        vart_country=append(vart_country,filter_viz$country)
 
-      }
-      if (!is.null(filter_viz$status)) {
-        vart_status= vector()
-        vart_status=append(vart_country,filter_viz$status)
 
-      }
-
-      df=request_country_get_data_map(quest_choose(),vart_country,vart_status)
+      df=request_country_get_data_map(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine)
       # #print(df)
       l=show_map(df)
 
     }
-    print(df)
+
     l
   })
 
@@ -285,6 +320,58 @@ viz_opts <- reactive({
 
   })
 
+
+
+  output$sel_country_ct <- renderUI({
+    default_select <- NULL
+    req(quest_choose())
+
+    if(quest_choose()=="contracts"){
+
+      df <- filter_make("contracts","Country")
+
+
+      selectizeInput("sel_country_ct","Country",
+                     df,
+                     default_select, multiple=TRUE, width='200px')
+    }
+
+  })
+
+  output$sel_supplier_ct <- renderUI({
+    default_select <- NULL
+    req(quest_choose())
+
+    if(quest_choose()=="contracts"){
+
+      df <- filter_make("contracts","Supplier")
+
+
+      selectizeInput("sel_supplier_ct","Supplier",
+                     df,
+                     default_select, multiple=TRUE, width='200px')
+    }
+
+  })
+
+
+  output$sel_vaccine_ct <- renderUI({
+    default_select <- NULL
+    req(quest_choose())
+
+    if(quest_choose()=="contracts"){
+
+      df <- filter_make("contracts","Vaccine")
+
+
+      selectizeInput("sel_vaccine_ct","Vaccine",
+                     df,
+                     default_select, multiple=TRUE, width='200px')
+    }
+
+  })
+
+
   possible_viz <- reactive({
     v <- c("map","bar","treemap","table")
     v
@@ -309,10 +396,20 @@ viz_opts <- reactive({
     if(quest_choose()=="request"){
       filter_viz$country=input$sel_country
       filter_viz$status=input$sel_status
+      filter_viz$supplier=NULL
+      filter_viz$vaccine=NULL
     }
     if(quest_choose()=="appeals"){
       filter_viz$country=input$sel_country_ap
       filter_viz$status=input$sel_status_ap
+      filter_viz$supplier=NULL
+      filter_viz$vaccine=NULL
+    }
+    if(quest_choose()=="contracts"){
+      filter_viz$status=NULL
+      filter_viz$country=input$sel_country_ct
+      filter_viz$supplier=input$sel_supplier_ct
+      filter_viz$vaccine=input$sel_vaccine_ct
     }
   })
 
@@ -344,7 +441,7 @@ viz_opts <- reactive({
 
 
   hgch_viz <- reactive({
-  tryCatch({
+  #tryCatch({
     req(quest_choose())
     req(viz_opts())
     if (is.null(vizFrtype())) return()
@@ -361,10 +458,10 @@ viz_opts <- reactive({
       )
     })
 
-    },
-    error = function(cond) {
-      return()
-    })
+    # },
+    # error = function(cond) {
+    #   return()
+    # })
   })
 
 
@@ -400,7 +497,7 @@ viz_opts <- reactive({
 
   output$r_viz <- leaflet::renderLeaflet({
 
-     req(r_viz())
+    req(r_viz())
     r_viz()
 
   })
@@ -420,6 +517,19 @@ viz_opts <- reactive({
       vart_status=append(vart_country,filter_viz$status)
 
     }
+
+    if (!is.null(filter_viz$supplier)) {
+      vart_supplier= vector()
+      vart_supplier=append(vart_supplier,filter_viz$supplier)
+
+    }
+
+    if (!is.null(filter_viz$vaccine)) {
+      vart_vaccine= vector()
+      vart_vaccine=append(vart_vaccine,filter_viz$vaccine)
+
+    }
+
 
     df=request_country_get_data_table(quest_choose(),vart_country,vart_status)
     df

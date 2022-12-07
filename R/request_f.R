@@ -15,7 +15,7 @@ get_year <- function(df, colname_to_year){
 # test_get_year = function(){
 #   dft=PharmaReApCon::get_data_api("request")
 #   dft=get_year(dft,"Submission.date..DD.MM.YYYY.")
-#    ##print(dft)
+#    ###print(dft)
 # }
 #
 #
@@ -26,8 +26,8 @@ get_year <- function(df, colname_to_year){
 #' @import dplyr
 #' @export
 counter_r <- function(df,colname_group1, colname_group2=NULL){
-  ##print(colname_group1)
-  ##print(names(df))
+  ###print(colname_group1)
+  ###print(names(df))
   if(is.null(colname_group2)){
     df = df %>% group_by(across(all_of(colname_group1))) %>% summarize(count =n())
   }else{
@@ -76,13 +76,15 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 # }
 #
 # test_filter_r()
-
+#TODO  improve recieving filtered data
 #' @import dplyr
 #' @export
-request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL, type="line"){
+request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL,supplier_fil=NULL,vaccine_fil=NULL, type="line"){
 
   df=get_data_api(name)
+
   total =NULL
+
   if(!is.null(country_fil)){
     df =filter_r(df,"Country",country_fil)
   }
@@ -90,34 +92,69 @@ request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=N
   if(!is.null(status_fil)){
     df =filter_r(df,"Status",status_fil)
   }
+
+  if(!is.null(supplier_fil)){
+
+    df =filter_r(df,"Supplier",supplier_fil)
+  }
+
+if(!is.null(vaccine_fil)){
+  df =filter_r(df,"Vaccine",vaccine_fil)
+}
 
 
   if(type=="bar"){
-    total =  counter_r(df,"Status")
-    total = df_color_tree(total,"Status")
+
+    if(name=="request" | name=="appeals"){
+      total =  counter_r(df,"Status")
+      total = df_color_tree(total,"Status")
+    }
+    else{
+
+      total =  counter_r(df,"Vaccine")
+      #########
+      total<- total %>% mutate(Vaccine = case_when(is.na(Vaccine) | Vaccine=="" ~ "(NA)", TRUE ~ Vaccine))
+
+
+      ############
+      total = df_color_tree(total,"Vaccine")
+
+    }
 
    }
   else{
-    total =  counter_r(df,"Country")
 
+    total =  counter_r(df,"Country")
     total = df_color_tree(total,"Country")
+
   }
 
   total
 }
 
 
+#TODO  improve recieving filtered data
 #' @import dplyr
 #' @export
-request_country_get_data_map <- function(name,  country_fil=NULL, status_fil=NULL){
+request_country_get_data_map <- function(name,  country_fil=NULL, status_fil=NULL, supplier_fil=NULL,vaccine_fil=NULL){
   df=get_data_api(name)
   total =NULL
+
   if(!is.null(country_fil)){
     df =filter_r(df,"Country",country_fil)
   }
 
   if(!is.null(status_fil)){
     df =filter_r(df,"Status",status_fil)
+  }
+
+
+  if(!is.null(supplier_fil)){
+    df =filter_r(df,"Supplier",supplier_fil)
+  }
+
+  if(!is.null(vaccine_fil)){
+    df =filter_r(df,"Vaccine",vaccine_fil)
   }
 
     total =  counter_r(df,"Country")
@@ -128,10 +165,10 @@ request_country_get_data_map <- function(name,  country_fil=NULL, status_fil=NUL
 
 
 
-
+#TODO  improve recieving filtered data
 #' @import dplyr
 #' @export
-request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=NULL){
+request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=NULL, supplier_fil=NULL,vaccine_fil=NULL){
 
   df=get_data_api(name)
 
@@ -142,7 +179,15 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
   if(!is.null(status_fil)){
     df =filter_r(df,"Status",status_fil)
   }
-  df
+  if(!is.null(supplier_fil)){
+    df =filter_r(df,"Supplier",supplier_fil)
+  }
+
+  if(!is.null(vaccine_fil)){
+    df =filter_r(df,"Vaccine",vaccine_fil)
+  }
+
+   df
 
 }
 
@@ -220,7 +265,7 @@ show_bar = function(df, color_by_input=NULL,tooltip_t=NULL){
       format_numericSymbols = T,
       color_by= color_by_input,
       #prefix="$",
-      tooltip = tooltip_t,
+      # tooltip = tooltip_t,
       legend_maxHeight = 100,
       background_color = "#ffffff"
     )
