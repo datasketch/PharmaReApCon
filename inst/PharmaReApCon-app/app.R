@@ -54,11 +54,6 @@ ui <- function(request) {
                           # uiOutput("sel_operativo"),
                            uiOutput("sel_valor"),
                            uiOutput("sel_periodo")
-                      ), div(class="footer",
-                              div(style = "display:flex;gap:50px; horizontal-align:middle; text-align:center",
-                                  tags$a(
-                                    img(src= 'viz_icons/logos-app-orca.png', align = "center", width = 240)))
-
                       )),
                   div(class = "panel",
                       div (class = "panel-body",
@@ -453,7 +448,7 @@ viz_opts <- reactive({
 
   output$viz <- renderUI({
      if (is.null(actual_but$active))
-       actual_but$active="bar"
+       actual_but$active="map"
 
     if (actual_but$active == "table") {
       dataTableOutput("table_dt",  width = 800)
