@@ -22,7 +22,7 @@ ui <- function(request) {
     ),
     # Leave this function for adding external resources
     shinypanels::panelsPage(
-      shinypanels::panel(title = "",
+      shinypanels::panel(title = "Filters",
                          id = "azul",
                          color="#6fcbff",
                          width = 250,
@@ -47,7 +47,7 @@ ui <- function(request) {
                            )
                          )
       ),
-      shinypanels::panel(title = "",
+      shinypanels::panel(title = "Visualization",
                          id = "naranja",
                          header_right = div(class="flex-container",style="display:flex;",
                                             div(class="flex-item-left",uiOutput("viz_icons")),
@@ -59,7 +59,7 @@ ui <- function(request) {
                                     uiOutput("viz")
                          )
       ),
-      shinypanels::panel(title = "",
+      shinypanels::panel(title = "Details",
                          id="verde",
                          width = 300,
                          body=
@@ -524,9 +524,9 @@ viz_opts <- reactive({
   output$descargas <- renderUI({
     if (is.null(actual_but$active)) return()
     if (actual_but$active != "table") {
-      dsmodules::downloadImageUI("download_viz", dropdownLabel ="Descargar", formats = c("jpeg", "pdf", "png", "html"), display = "dropdown", text = "Descargar")
+      dsmodules::downloadImageUI("download_viz", dropdownLabel ="Download", formats = c("jpeg", "pdf", "png", "html"), display = "dropdown", text = "Descargar")
     } else {
-      dsmodules::downloadTableUI("dropdown_table", dropdownLabel = "Descargar", formats = c("csv", "xlsx", "json"), display = "dropdown", text = "Descargar")
+      dsmodules::downloadTableUI("dropdown_table", dropdownLabel = "Download", formats = c("csv", "xlsx", "json"), display = "dropdown", text = "Descargar")
     }
   })
 

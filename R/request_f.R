@@ -196,7 +196,7 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
 df_color_tree <- function(df, col_to_color,pallete="Pubu"){
   coloresFuente = df %>%  dplyr::distinct(across(all_of(col_to_color)))
   b=nrow(coloresFuente)
-  color_tree = hcl.colors(b,palette = "Pubu")
+  color_tree = hcl.colors(b,palette = "green-orange")
   vart= vector()
   vart=append(vart,color_tree)
   coloresFuente = as.data.frame(cbind(coloresFuente,vart))
@@ -240,7 +240,7 @@ show_map<- function(df){
            caption = "",
 
            background_color = "#ffffff",
-           palette_colors = c("#d7d1ff", "#bcb5f6", "#a19ae5", "#8880ce", "#7268b1", "#5d518f", "#4b3c69"))
+           palette_colors = rev(c("#ef4e00", "#f66a02", "#fb8412", "#fd9d29", "#ffb446", "#ffca6b", "#ffdf98")))
 
    l
 }
