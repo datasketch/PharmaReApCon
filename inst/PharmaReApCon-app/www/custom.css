@@ -92,16 +92,16 @@ height: 30px !important;
 
 .buttons-group .button-style.active-btn {
   filter: grayscale(1) !important;
-  background-color: #C84210 !important;
-  background: #C84210 !important;
-  color: #C84210 !important;
+  background-color: #6fcbff !important;
+  background: #6fcbff !important;
+  color:#6fcbff !important;
 }
 
 
 .buttons-group .button-style.active-btn:hover {
-  background-color: #C84210 !important;
-  background: #C84210 !important;
-  color: #C84210 !important;
+  background-color: #6fcbff !important;
+  background: #6fcbff !important;
+  color: #6fcbff !important;
 }
 
 .buttons-group {
@@ -131,6 +131,7 @@ height: 30px !important;
  word-wrap: break-word;
  padding: 4px 0;
  padding-left: 10px;
+ background-color: #6fcbff  !important;
 }
 
 
@@ -218,3 +219,19 @@ border-radius: 11px;
   flex: 50%;
 }
 
+#request{
+  color:"black" !important;
+
+}
+
+.btn .btn-default .action-button .shiny-bound-input{
+
+  background-color: #4CAF50 !important; /* Green */
+  border: none;
+  color: white !important;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}

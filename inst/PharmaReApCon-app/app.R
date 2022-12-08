@@ -22,8 +22,9 @@ ui <- function(request) {
     ),
     # Leave this function for adding external resources
     shinypanels::panelsPage(
-      shinypanels::panel(title = "FILTROS",
+      shinypanels::panel(title = "",
                          id = "azul",
+                         color="#6fcbff",
                          width = 250,
                            body = div(
                              tags$head(tags$script(src="handlers.js")),
