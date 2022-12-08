@@ -348,6 +348,7 @@ viz_opts <- reactive({
 
 
   possible_viz <- reactive({
+    req(quest_choose())
     v <- c("map","bar","treemap","table")
     v
   })
@@ -522,6 +523,7 @@ viz_opts <- reactive({
   })
 
   output$descargas <- renderUI({
+    req(quest_choose())
     if (is.null(actual_but$active)) return()
     if (actual_but$active != "table") {
       dsmodules::downloadImageUI("download_viz", dropdownLabel ="Download", formats = c("jpeg", "pdf", "png", "html"), display = "dropdown", text = "Descargar")
