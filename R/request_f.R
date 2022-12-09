@@ -297,7 +297,7 @@ html_table_block <- function(da){
   for(j in 1:nrow(da)){
     v <- NULL
     for(i in 1:ncol(da)){
-     v <- append(v,paste0( colnames(da[i]),": ", da[j,i]))
+     v <- append(v,paste0( "<B>",colnames(da[i]),"</B>",": ", da[j,i]))
     }
     list_temp <- paste(v, "</BR>",collapse = " ")
     list_temp2 <- paste(list_temp2,list_temp, "</BR> </BR>")
