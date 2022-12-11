@@ -552,7 +552,7 @@ viz_opts <- reactive({
 
   output$side_table <- renderUI({
     req(df_temp())
-    (html_table_block(df_temp()))
+    (html_table_block(df_temp(),"Request..doc."))
 
     })
 

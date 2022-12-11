@@ -288,20 +288,77 @@ show_table<- function(df){
   )
 }
 
+# html_table_block <- function(da,param){
+#   v <- vector()
+#   list_temp2 <- ""
+#   for(j in 1:nrow(da)){
+#     v <- NULL
+#     for(i in 1:ncol(da)){
+#       if(colnames(da[i])==param) {
+#         v <- append(v,paste0("<B>",colnames(da[i]),"</B>",": ", da[j,i]))
+#       }
+#       else {
+#         v <- append(v,paste0("<B>",colnames(da[i]),"</B>",": ", da[j,i]))
+#
+#       }
+#     }
+#     list_temp <- paste(v, "</BR>",collapse = " ")
+#     list_temp2 <- paste(list_temp2,list_temp, "</BR> </BR>")
+#   }
+#
+#   list_temp2 <- HTML(list_temp2)
+# }
 
 
 #' @export
-html_table_block <- function(da){
+html_table_block <- function(da,param){
+  # da=get_data_api("request")
+  # param="Request..doc."
   v <- vector()
   list_temp2 <- ""
+  colnames(da[7])
   for(j in 1:nrow(da)){
     v <- NULL
     for(i in 1:ncol(da)){
-     v <- append(v,paste0( "<B>",colnames(da[i]),"</B>",": ", da[j,i]))
+     if(colnames(da[i])==param) {
+       print("entri")
+       v <- append(v,paste0("<B>",colnames(da[i]),"</B>",": ", to_url_link(da[j,i])))
+     }
+      else {
+        print("entri3")
+        v <- append(v,paste0("<B>",colnames(da[i]),"</B>",": ", da[j,i]))
+
+      }
     }
     list_temp <- paste(v, "</BR>",collapse = " ")
     list_temp2 <- paste(list_temp2,list_temp, "</BR> </BR>")
   }
 
   list_temp2 <- HTML(list_temp2)
+}
+
+
+paste_url_tag <- function(head, url) {
+  #head not implemented
+  # a(paste("href",url,sep="="), "document.pdf")
+  paste0("<a href='",url,"'>Document</a>")
+}
+
+#' @export
+to_url_link <- function(a){
+    # a= "victima(1).pdf( http:1) ( http:2"
+  # print("##############################################################")
+  a <- str_replace_all(a,"\\([1-9]\\)","")
+  a <- str_replace_all(a,"[' ']","")
+  b <- str_replace_all(a,"[(]"," ")
+  b <- str_replace_all(b,"[)]","")
+  a <- stringr::str_split(b," ")[[1]]
+  c <- data.frame()
+  for(i in 2:length(a)) {
+
+    c <- append(c,(paste_url_tag(a[1],a[i])))
+  }
+
+  c
+
 }
