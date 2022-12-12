@@ -321,9 +321,8 @@ html_table_block <- function(da,param){
     v <- NULL
     for(i in 1:ncol(da)){
      if(colnames(da[i])==param) {
-       print("entri")
        v <- append(v,paste0("<B>",colnames(da[i]),"</B>",": ", to_url_link(da[j,i])))
-       print(v)
+
      }
       else {
         #print("entri3")
@@ -334,7 +333,7 @@ html_table_block <- function(da,param){
     list_temp <- paste(v, "</BR>",collapse = " ")
     list_temp2 <- paste(list_temp2,list_temp, "</BR> </BR>")
   }
-  print(list_temp2)
+
   list_temp2 <- HTML(list_temp2)
 }
 

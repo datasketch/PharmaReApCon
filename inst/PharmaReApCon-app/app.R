@@ -65,7 +65,14 @@ ui <- function(request) {
                          body=
                          div(style="flex-grow: 1; max-width: 300px;overflow: scroll;max-height: 620px",
                              htmlOutput("side_table")
-                         )
+                         ),
+                         footer =  div(style = "display:flex;gap:40px",
+
+
+
+                                         img(src= 'viz_icons/ti.svg', align = "left"),
+                                         img(src= 'viz_icons/dts.svg', align = "right"))
+
 
       )
     )
@@ -574,7 +581,6 @@ viz_opts <- reactive({
   output$side_table <- renderUI({
     req(quest_choose())
     req(df_temp())
-    print(quest_choose())
     if(quest_choose()=="request") {
       html_table_block(df_temp(),"Request..doc.")
      }
