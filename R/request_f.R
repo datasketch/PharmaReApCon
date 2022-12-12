@@ -57,7 +57,7 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
    # print(class(df))
 
    l  <-  df %>% dplyr::distinct(across(all_of(filter_var)))
-   # print("l")
+   print("l")
    # print(l)
    if(orderasc==TRUE) l  <-  l %>% dplyr::arrange(filter_var)
    if(orderdesc==TRUE) l  <-  l %>% dplyr::arrange(desc(filter_var))

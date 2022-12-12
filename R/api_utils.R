@@ -11,13 +11,31 @@
 # )
 #
 #
+# contracts  <- airtabler::airtable(base = "app2THgdU5NHqq1hh" , #appxxxxxxxx
+#                                  tables = c("tbl7EnV6QCTrvIAB7")#eg: ("tabla1", "tabla2")
+# )
+#
+#
+# request <- airtabler::airtable(base = "app2THgdU5NHqq1hh" , #appxxxxxxxx
+#                                tables = c("tbl0RZB8txg6xaDVZ")#eg: ("tabla1", "tabla2")
+# )
+# request <- as.data.frame(request$tbl0RZB8txg6xaDVZ$select())
+# class(request$Status)
+#
+#
 # b <- as.data.frame(countries$tbl6WB3ZHH9d7ZicJ$select())
 # a= as.data.frame(request$tbl0RZB8txg6xaDVZ$select())
+#
+# c =  as.data.frame(contracts$tbl7EnV6QCTrvIAB7$select())
+# c$Contracts[[1]][2]
+# class(c$Vaccine)
 #
 # a$Country = unlist(a$Country)
 # a=a %>% left_join(b |> select(id,Country),by=c("Country"="id"))
 # a=a %>% rename(country_id=Country, Country= Country.y)
 # str(a)
+#
+# [[i]][3])
 # # paste(a$`Request (doc)`[[21]][1,3],a$`Request (doc)`[[21]][1,2],sep=" ")
 # #
 # # nrow(a$`Request (doc)`[[21]][3])
