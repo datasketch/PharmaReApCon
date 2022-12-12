@@ -52,8 +52,13 @@ filter_r <- function(df,colname_filter_col, colname_filter_val){
 filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 
    df <- get_data_api(df_name) #chance to  get filter data as parameter
-   l  <-  df %>% dplyr::distinct(across(all_of(filter_var)))
+   # print("df")
+   # print(df)
+   # print(class(df))
 
+   l  <-  df %>% dplyr::distinct(across(all_of(filter_var)))
+   # print("l")
+   # print(l)
    if(orderasc==TRUE) l  <-  l %>% dplyr::arrange(filter_var)
    if(orderdesc==TRUE) l  <-  l %>% dplyr::arrange(desc(filter_var))
    l

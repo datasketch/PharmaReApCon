@@ -1,4 +1,4 @@
-  $( document ).ready(function() {
+$( document ).ready(function() {
 
 $(document).on('click', '.needed', function () {
   Shiny.onInputChange('last_click',this.id);
