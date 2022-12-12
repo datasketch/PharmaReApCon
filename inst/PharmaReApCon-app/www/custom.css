@@ -5,7 +5,10 @@ html, body {
   color: #3A3C6A !important;
 }
 
+#naranja_body{
 
+   background-image: url('../viz_icons/Background-ds@2x.png');
+}
 
 .shinybusy, .shinybusy-ready {
  top: 30% !important;

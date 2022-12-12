@@ -49,6 +49,7 @@ ui <- function(request) {
       ),
       shinypanels::panel(title = "Visualization",
                          id = "naranja",
+                         # background= "viz_icons/Background-ds@2x.png",
                          header_right = div(class="flex-container",style="display:flex;",
                                             div(class="flex-item-left",uiOutput("viz_icons")),
                                             div(class="flex-item-right",uiOutput("descargas"))
