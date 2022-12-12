@@ -156,7 +156,6 @@ server <- function(input, output, session) {
 
   observeEvent(input$last_click, {
     shinyjs::toggle(id = "request")
-    print(input$last_click)
     if(input$last_click == "request"){
       updateActionButton(session,"request", icon=icon("arrow-down", class="fa",  lib ="font-awesome"))
     }else{
@@ -573,9 +572,18 @@ viz_opts <- reactive({
 
 
   output$side_table <- renderUI({
+    req(quest_choose())
     req(df_temp())
-    (html_table_block(df_temp(),"Request..doc."))
-
+    print(quest_choose())
+    if(quest_choose()=="request") {
+      html_table_block(df_temp(),"Request..doc.")
+     }
+     else{
+       if(quest_choose()=="contracts") { html_table_block(df_temp(),"Contracts") }
+       else {
+          if(quest_choose()=="appeals") { html_table_block(df_temp(),"Attachments") }
+       }
+      }
     })
 
 }
