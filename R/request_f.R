@@ -15,7 +15,7 @@ get_year <- function(df, colname_to_year){
 # test_get_year = function(){
 #   dft=PharmaReApCon::get_data_api("request")
 #   dft=get_year(dft,"Submission.date..DD.MM.YYYY.")
-#    ###print(dft)
+#    ####print(dft)
 # }
 #
 #
@@ -26,8 +26,8 @@ get_year <- function(df, colname_to_year){
 #' @import dplyr
 #' @export
 counter_r <- function(df,colname_group1, colname_group2=NULL){
-  ###print(colname_group1)
-  ###print(names(df))
+  ####print(colname_group1)
+  ####print(names(df))
   if(is.null(colname_group2)){
     df <- df %>% group_by(across(all_of(colname_group1))) %>% summarize(count =n())
   }else{
@@ -321,11 +321,11 @@ html_table_block <- function(da,param){
     v <- NULL
     for(i in 1:ncol(da)){
      if(colnames(da[i])==param) {
-       print("entri")
+       #print("entri")
        v <- append(v,paste0("<B>",colnames(da[i]),"</B>",": ", to_url_link(da[j,i])))
      }
       else {
-        print("entri3")
+        #print("entri3")
         v <- append(v,paste0("<B>",colnames(da[i]),"</B>",": ", da[j,i]))
 
       }
@@ -347,7 +347,7 @@ paste_url_tag <- function(head, url) {
 #' @export
 to_url_link <- function(a){
     # a= "victima(1).pdf( http:1) ( http:2"
-  # print("##############################################################")
+  # #print("##############################################################")
   a <- str_replace_all(a,"\\([1-9]\\)","")
   a <- str_replace_all(a,"[' ']","")
   b <- str_replace_all(a,"[(]"," ")

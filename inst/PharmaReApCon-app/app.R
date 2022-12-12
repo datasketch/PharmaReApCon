@@ -74,7 +74,7 @@ ui <- function(request) {
   )
 }
 
-server <- function(input, output) {
+server <- function(input, output, session) {
 
 
 
@@ -84,7 +84,7 @@ server <- function(input, output) {
 
     df <- data.frame(id = ids, questions = labels)
     l <- purrr::map(1:nrow(df), function(z){
-      shiny::actionButton(inputId = df[z,]$id, label = df[z,]$questions, class = "needed")# %>%
+      shiny::actionButton(inputId = df[z,]$id, label = df[z,]$questions, class = "needed", icon=icon("arrow-right", class="fa",  lib ="font-awesome"))# %>%
 
     })
     # l[[1]] <- gsub("needed", "needed basic_active", l[[1]])
@@ -115,7 +115,7 @@ server <- function(input, output) {
 
     df <- data.frame(id = ids, questions = labels)
     l <- purrr::map(1:nrow(df), function(z){
-      shiny::actionButton(inputId = df[z,]$id, label = df[z,]$questions, class = "needed")# %>%
+      shiny::actionButton(inputId = df[z,]$id, label = df[z,]$questions,class = "needed")# %>%
 
     })
     # l[[1]] <- gsub("needed", "needed basic_active", l[[1]])
@@ -154,6 +154,28 @@ server <- function(input, output) {
     last_btn
   })
 
+  observeEvent(input$last_click, {
+    shinyjs::toggle(id = "request")
+    print(input$last_click)
+    if(input$last_click == "request"){
+      updateActionButton(session,"request", icon=icon("arrow-down", class="fa",  lib ="font-awesome"))
+    }else{
+      updateActionButton(session,"request",icon=icon("arrow-right", class="fa",  lib ="font-awesome"))
+    }
+
+
+    if(input$last_click == "appeals"){
+      updateActionButton(session,"appeals", icon=icon("arrow-down", class="fa",  lib ="font-awesome"))
+    }else{
+      updateActionButton(session,"appeals",icon=icon("arrow-right", class="fa",  lib ="font-awesome"))
+    }
+
+    if(input$last_click == "contracts"){
+      updateActionButton(session,"contracts", icon=icon("arrow-down", class="fa",  lib ="font-awesome"))
+    }else{
+      updateActionButton(session,"contracts",icon=icon("arrow-right", class="fa",  lib ="font-awesome"))
+    }
+  }, ignoreInit = TRUE)
 
 
 titleviz <-reactive({
