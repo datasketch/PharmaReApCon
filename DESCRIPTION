@@ -35,7 +35,8 @@ Imports:
     sitools,
     shinyWidgets,
     shinypanels,
-    webshot2
+    webshot2,
+    airtabler
 Remotes: 
     datasketch/dsmodules,
     datasketch/hgchmagic,
