@@ -101,10 +101,22 @@ get_data_api <- function(name,selector=NULL){
     }
 
     a$Country  <-  unlist(a$Country)
+
+    a$Vaccine_text  <- ""
+
+    for(i in 1:nrow(a)){
+
+      if(!is.null(a$Vaccine[[i]]))  a$Vaccine_text[i]=a$Vaccine[[i]]
+      else  a$Vaccine_text[i]= "NA"
+
+
+    }
+
     a <- a %>% left_join(b,by=c("Country"="id"))
     a <- a %>% rename(country_id=Country, Country= Country.y)
     a <- a %>% rename(Contracts_list=Contracts, Contracts= Contracts_text)
-    a <- a |> select(!c(country_id,Contracts_list))
+    a <- a %>% rename(Vaccine_list=Vaccine, Vaccine = Vaccine_text)
+    a <- a |> select(!c(country_id, Contracts_list, Vaccine_list))
     # load("data/contracts.rda")
     result <- a
     rm(a)

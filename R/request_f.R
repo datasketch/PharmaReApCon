@@ -58,7 +58,7 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 
    l  <-  df %>% dplyr::distinct(across(all_of(filter_var)))
    print("l")
-   # print(l)
+   print(l)
    if(orderasc==TRUE) l  <-  l %>% dplyr::arrange(filter_var)
    if(orderdesc==TRUE) l  <-  l %>% dplyr::arrange(desc(filter_var))
    l
@@ -85,7 +85,7 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 #' @import dplyr
 #' @export
 request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL,supplier_fil=NULL,vaccine_fil=NULL, type="line"){
-
+  print("into data graph")
   df <- get_data_api(name)
 
   total  <- NULL
@@ -109,18 +109,29 @@ if(!is.null(vaccine_fil)){
 
 
   if(type=="bar"){
-
+     print("into bar")
     if(name=="request" | name=="appeals"){
+      print("intorequest")
+      print(df)
       total <- counter_r(df,"Status")
+      print(total)
       total <- df_color_tree(total,"Status")
+
+      print(total)
     }
     else{
-
+      print("contract")
       total <- counter_r(df,"Vaccine")
+      print("total")
+      print(total)
       #########
       total <- total %>% mutate(Vaccine = case_when(is.na(Vaccine) | Vaccine=="" ~ "(NA)", TRUE ~ Vaccine))
+      print("total2")
+      print(total)
       ############
       total <-  df_color_tree(total,"Vaccine")
+      print("total3")
+      print(total)
 
     }
 
@@ -197,14 +208,23 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
 #TODO group by count distinct
 #' @export
 df_color_tree <- function(df, col_to_color,pallete="Pubu"){
+  print("into color tree")
   coloresFuente  <-  df %>%  dplyr::distinct(across(all_of(col_to_color)))
+  print("colores")
   b <- nrow(coloresFuente)
-  color_tree  <- hcl.colors(b,palette = "green-orange")
+  print(b)
+  if(b>1)   color_tree  <- hcl.colors(1,palette = "green-orange")
+  else color_tree = c("#11C638")
+  print(color_tree)
   vart <- vector()
   vart <- append(vart,color_tree)
+
   coloresFuente <- as.data.frame(cbind(coloresFuente,vart))
+  print(coloresFuente)
   colnames(coloresFuente)  <-  c(col_to_color,"...colors")
   df <- df %>% dplyr::left_join(coloresFuente, copy=TRUE)
+  print("df")
+  print(df)
   df
 }
 

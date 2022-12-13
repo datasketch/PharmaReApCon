@@ -27,8 +27,17 @@
 # a= as.data.frame(request$tbl0RZB8txg6xaDVZ$select())
 #
 # c =  as.data.frame(contracts$tbl7EnV6QCTrvIAB7$select())
+# c$Vaccine = unlist(c$Vaccine)
+# c[sapply(c$Vaccine, is.null)] <- NA
+# class(c$Supplier)
+#
+#
+# c$Vaccine[[29]][2]
+#
 # c$Contracts[[1]][2]
-# class(c$Vaccine)
+# class(c$)
+# a$Country = unlist(a$Country)
+#
 #
 # a$Country = unlist(a$Country)
 # a=a %>% left_join(b |> select(id,Country),by=c("Country"="id"))
@@ -56,6 +65,17 @@
 #   print(temp)
 #   }
 # }
+#
+#   c$Vaccine_list=""
+#   for(i in 1:nrow(c)){
+#     temp=""
+#     print(nrow(c$Vaccine[[i]]))
+#        if(!is.null(c$Vaccine[[i]]))      c$Vaccine_list[i]=c$Vaccine[[i]]
+#       else  c$Vaccine_list[i]= "NA"
+#
+#
+#   }
+#
 #
 # a$Request..doc.
 # #

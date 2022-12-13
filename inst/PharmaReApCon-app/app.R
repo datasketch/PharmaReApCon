@@ -232,7 +232,10 @@ viz_opts <- reactive({
 
       }
       else{
+        print("into var")
         df <- request_country_get_data_graph(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine,type="bar")
+        print("into var")
+        print(df)
           if(quest_choose()!="contract") {
             l <- show_bar(df, "Status",paste0("Status: ","{Status} Total {count}"))
           }
@@ -580,19 +583,24 @@ viz_opts <- reactive({
 
 
   output$side_table <- renderUI({
-    req(quest_choose())
-    req(df_temp())
-    if(quest_choose()=="request") {
-      html_table_block(df_temp(),"Request..doc.")
-     }
-     else{
-       if(quest_choose()=="contracts") { html_table_block(df_temp(),"Contracts") }
-       else {
-          if(quest_choose()=="appeals") { html_table_block(df_temp(),"Attachments") }
-       }
-      }
-    })
+    tryCatch({
+        req(quest_choose())
+        req(df_temp())
+        if(quest_choose()=="request") {
+          html_table_block(df_temp(),"Request..doc.")
+         }
+         else{
+           if(quest_choose()=="contracts") { html_table_block(df_temp(),"Contracts") }
+           else {
+              if(quest_choose()=="appeals") { html_table_block(df_temp(),"Attachments") }
+           }
+          }
 
+    },
+    error = function(cond) {
+      return()
+    })
+  })
 }
 
 shinyApp(ui, server)
