@@ -1,6 +1,6 @@
 #' @export
 get_data_api <- function(name,selector=NULL){
-  # readRenviron(".Renviron")
+  readRenviron("environ.R")
   options(timeout=100000)
   result=NULL
 
