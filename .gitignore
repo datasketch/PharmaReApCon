@@ -3,6 +3,7 @@
 .Rapp.history
 
 inst/PharmaReApCon-app/.Renviron
+inst/PharmaReApCon-app/renviron.R
 # Session Data files
 .RData
 
