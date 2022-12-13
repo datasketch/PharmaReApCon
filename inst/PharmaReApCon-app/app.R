@@ -152,13 +152,13 @@ server <- function(input, output, session) {
 
   quest_choose <- reactive({
     last_btn <- input$last_click
-    # print("lassst")
-    # print(last_btn)
+    # #print("lassst")
+    # #print(last_btn)
     # # input$sel_country=NULL
     # # input$sel_status=NULL
     # # if(input$sel_valor) input$sel_valor="cantidad"
     # # if (is.null(last_btn)) last_btn <- "Request"
-    # print(last_btn)
+    # #print(last_btn)
     last_btn
   })
 
@@ -232,10 +232,10 @@ viz_opts <- reactive({
 
       }
       else{
-        print("into var")
+        #print("into var")
         df <- request_country_get_data_graph(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine,type="bar")
-        print("into var")
-        print(df)
+        #print("into var")
+        #print(df)
           if(quest_choose()!="contract") {
             l <- show_bar(df, "Status",paste0("Status: ","{Status} Total {count}"))
           }
@@ -270,8 +270,8 @@ viz_opts <- reactive({
 
 
     if(quest_choose()=="request"){
-      df <- filter_make("request","Country")
-
+      df <- filter_make("request","Country",orderasc=TRUE)
+      df <- df |> dplyr::filter(!Country=="NA")
 
 
      selectizeInput("sel_country","Country",
@@ -286,7 +286,7 @@ viz_opts <- reactive({
     req(quest_choose())
     default_select <- NULL
     if(quest_choose()=="request"){
-      df <- filter_make("request","Status")
+      df <- filter_make("request","Status",orderasc=TRUE)
       selectizeInput("sel_status","Status",
                      df,
                      default_select, multiple=TRUE, width='200px')
@@ -302,7 +302,8 @@ viz_opts <- reactive({
 
     if(quest_choose()=="appeals"){
 
-      df <- filter_make("appeals","Country")
+      df <- filter_make("appeals","Country",orderasc=TRUE)
+      df <- df |> dplyr::filter(!Country=="NA")
 
 
     selectizeInput("sel_country_ap","Country",
@@ -318,7 +319,7 @@ viz_opts <- reactive({
     default_select <- NULL
     if(quest_choose()=="appeals"){
 
-      df <- filter_make("appeals","Status")
+      df <- filter_make("appeals","Status",orderasc=TRUE)
 
      selectizeInput("sel_status_ap","Status",
                    df,
@@ -335,7 +336,8 @@ viz_opts <- reactive({
 
     if(quest_choose()=="contracts"){
 
-      df <- filter_make("contracts","Country")
+      df <- filter_make("contracts","Country", orderasc=TRUE)
+      df <- df |> dplyr::filter(!Country=="NA")
 
 
       selectizeInput("sel_country_ct","Country",
@@ -351,7 +353,7 @@ viz_opts <- reactive({
 
     if(quest_choose()=="contracts"){
 
-      df <- filter_make("contracts","Supplier")
+      df <- filter_make("contracts","Supplier",orderasc=TRUE)
 
 
       selectizeInput("sel_supplier_ct","Supplier",
@@ -368,7 +370,7 @@ viz_opts <- reactive({
 
     if(quest_choose()=="contracts"){
 
-      df <- filter_make("contracts","Vaccine")
+      df <- filter_make("contracts","Vaccine",orderasc=TRUE)
 
 
       selectizeInput("sel_vaccine_ct","Vaccine",
@@ -449,7 +451,7 @@ viz_opts <- reactive({
 
 
   hgch_viz <- reactive({
-  tryCatch({
+  # tryCatch({
     req(quest_choose())
     req(viz_opts())
     if (is.null(vizFrtype())) return()
@@ -466,10 +468,10 @@ viz_opts <- reactive({
       )
     })
 
-    },
-    error = function(cond) {
-      return()
-    })
+    # },
+    # error = function(cond) {
+    #   return()
+    # })
   })
 
 

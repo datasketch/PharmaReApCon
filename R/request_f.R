@@ -15,7 +15,7 @@ get_year <- function(df, colname_to_year){
 # test_get_year = function(){
 #   dft=PharmaReApCon::get_data_api("request")
 #   dft=get_year(dft,"Submission.date..DD.MM.YYYY.")
-#    ####print(dft)
+#    #####print(dft)
 # }
 #
 #
@@ -26,8 +26,8 @@ get_year <- function(df, colname_to_year){
 #' @import dplyr
 #' @export
 counter_r <- function(df,colname_group1, colname_group2=NULL){
-  ####print(colname_group1)
-  ####print(names(df))
+  #####print(colname_group1)
+  #####print(names(df))
   if(is.null(colname_group2)){
     df <- df %>% group_by(across(all_of(colname_group1))) %>% summarize(count =n())
   }else{
@@ -52,24 +52,20 @@ filter_r <- function(df,colname_filter_col, colname_filter_val){
 filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 
    df <- get_data_api(df_name) #chance to  get filter data as parameter
-   # print("df")
-   # print(df)
-   # print(class(df))
-
    l  <-  df %>% dplyr::distinct(across(all_of(filter_var)))
-   print("l")
-   print(l)
-   if(orderasc==TRUE) l  <-  l %>% dplyr::arrange(filter_var)
-   if(orderdesc==TRUE) l  <-  l %>% dplyr::arrange(desc(filter_var))
+   #print("l")
+   #print(l)
+   if(orderasc==TRUE) l  <-  l %>% dplyr::arrange(across(all_of(filter_var)))
+   if(orderdesc==TRUE) l  <-  l %>% dplyr::arrange(across(all_of(filter_var)))
    l
 }
 
 # test_filter_maker <- function(){
 #   df=get_data_api("request")
-#    l = filter_make(df,"Country")
+#    l = filter_make("request","Country",orderdesc=TRUE)
 #     l
 # }
-#
+
 
 # test_filter_maker()
 #
@@ -85,7 +81,7 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 #' @import dplyr
 #' @export
 request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL,supplier_fil=NULL,vaccine_fil=NULL, type="line"){
-  print("into data graph")
+  #print("into data graph")
   df <- get_data_api(name)
 
   total  <- NULL
@@ -109,29 +105,29 @@ if(!is.null(vaccine_fil)){
 
 
   if(type=="bar"){
-     print("into bar")
+     #print("into bar")
     if(name=="request" | name=="appeals"){
-      print("intorequest")
-      print(df)
+      #print("intorequest")
+      #print(df)
       total <- counter_r(df,"Status")
-      print(total)
+      #print(total)
       total <- df_color_tree(total,"Status")
 
-      print(total)
+      #print(total)
     }
     else{
-      print("contract")
+      #print("contract")
       total <- counter_r(df,"Vaccine")
-      print("total")
-      print(total)
+      #print("total")
+      #print(total)
       #########
       total <- total %>% mutate(Vaccine = case_when(is.na(Vaccine) | Vaccine=="" ~ "(NA)", TRUE ~ Vaccine))
-      print("total2")
-      print(total)
+      #print("total2")
+      #print(total)
       ############
       total <-  df_color_tree(total,"Vaccine")
-      print("total3")
-      print(total)
+      #print("total3")
+      #print(total)
 
     }
 
@@ -208,23 +204,23 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
 #TODO group by count distinct
 #' @export
 df_color_tree <- function(df, col_to_color,pallete="Pubu"){
-  print("into color tree")
+  #print("into color tree")
   coloresFuente  <-  df %>%  dplyr::distinct(across(all_of(col_to_color)))
-  print("colores")
+  #print("colores")
   b <- nrow(coloresFuente)
-  print(b)
+  #print(b)
   if(b>1)   color_tree  <- hcl.colors(1,palette = "green-orange")
   else color_tree = c("#11C638")
-  print(color_tree)
+  #print(color_tree)
   vart <- vector()
   vart <- append(vart,color_tree)
 
   coloresFuente <- as.data.frame(cbind(coloresFuente,vart))
-  print(coloresFuente)
+  #print(coloresFuente)
   colnames(coloresFuente)  <-  c(col_to_color,"...colors")
   df <- df %>% dplyr::left_join(coloresFuente, copy=TRUE)
-  print("df")
-  print(df)
+  #print("df")
+  #print(df)
   df
 }
 
@@ -350,7 +346,7 @@ html_table_block <- function(da,param){
 
      }
       else {
-        #print("entri3")
+        ##print("entri3")
         v <- append(v,paste0("<B>",colnames(da[i]),"</B>",": ", da[j,i]))
 
       }
@@ -372,7 +368,7 @@ paste_url_tag <- function(head, url) {
 #' @export
 to_url_link <- function(a){
     # a= "victima(1).pdf( http:1) ( http:2"
-  # #print("##############################################################")
+  # ##print("##############################################################")
   a <- str_replace_all(a,"\\([1-9]\\)","")
   a <- str_replace_all(a,"[' ']","")
   b <- str_replace_all(a,"[(]"," ")
