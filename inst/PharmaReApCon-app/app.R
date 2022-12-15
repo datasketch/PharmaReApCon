@@ -152,13 +152,13 @@ server <- function(input, output, session) {
 
   quest_choose <- reactive({
     last_btn <- input$last_click
-    # #print("lassst")
-    # #print(last_btn)
+    # ##print("lassst")
+    # ##print(last_btn)
     # # input$sel_country=NULL
     # # input$sel_status=NULL
     # # if(input$sel_valor) input$sel_valor="cantidad"
     # # if (is.null(last_btn)) last_btn <- "Request"
-    # #print(last_btn)
+    # ##print(last_btn)
     last_btn
   })
 
@@ -184,6 +184,23 @@ server <- function(input, output, session) {
     }
   }, ignoreInit = TRUE)
 
+
+ # observeEvent(input$hcClickedgraph, {
+ #    #print(input$hcClickedgraph$id)
+ #  }, ignoreInit = TRUE)
+
+ # observeEvent(input$r_viz_shape_click, {
+ #   #print(input$r_viz_shape_click$id)
+ #   df = filter_r(df_temp(),"Country",input$r_viz_shape_click$id)
+ #   side
+ #   #print("click shape")
+ # }, ignoreInit = TRUE)
+
+
+ # observeEvent(input$r_viz_click, {
+ #   #print(input$r_viz_click)
+ #   #print("click lat")
+ # }, ignoreInit = TRUE)
 
 titleviz <-reactive({
 
@@ -221,23 +238,21 @@ viz_opts <- reactive({
 
     }
     if(actual_but$active=="treemap" | actual_but$active=="bar"){
-
-
       if(actual_but$active=="treemap"){
-        # print("df")
+        #print("df")
         df <- request_country_get_data_graph(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine, type="treemap")
-        # print(df)
-        #  print("l")
+        # #print(df)
+        #  #print("l")
           l <- show_bar(df, "Country",paste0("Country: ","{Country} Total {count}"))
-          print(l)
+          #print(l)
 
 
       }
       else{
-        #print("into var")
+        ##print("into var")
         df <- request_country_get_data_graph(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine,type="bar")
-        #print("into var")
-        #print(df)
+        ##print("into var")
+        ##print(df)
           if(quest_choose()!="contract") {
             l <- show_bar(df, "Status",paste0("Status: ","{Status} Total {count}"))
           }
@@ -546,6 +561,12 @@ viz_opts <- reactive({
 
 
     df <- request_country_get_data_table(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine)
+    #todo implementar dentro de la funcion
+    if(quest_choose()=="request") parameters_col <- c("Country","Status","Submission date","Authority summoned","Request..doc.")
+    if(quest_choose()=="appeals") parameters_col <- c("Country","Status","Attachments","Link")
+    if(quest_choose()=="contracts") parameters_col <- c("Country","Supplier","Vaccine")
+
+    df <- dplyr::select(df,one_of(parameters_col))
     df
   })
 
@@ -553,6 +574,8 @@ viz_opts <- reactive({
     req(quest_choose())
     req(df_temp())
     # df=request_country_get_data_table(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine)
+
+
     l <- show_table(df_temp())
     l
 
@@ -562,14 +585,18 @@ viz_opts <- reactive({
     req(quest_choose())
     if (is.null(actual_but$active)) return()
     if (actual_but$active != "table") {
-      dsmodules::downloadImageUI("download_viz", dropdownLabel ="Download", formats = c("jpeg", "pdf", "png", "html"), display = "dropdown", text = "Descargar")
-    } else {
-      dsmodules::downloadTableUI("dropdown_table", dropdownLabel = "Download", formats = c("csv", "xlsx", "json"), display = "dropdown", text = "Descargar")
+      if(actual_but$active != "map")
+         dsmodules::downloadImageUI("download_viz", dropdownLabel ="Download", formats = c("jpeg", "pdf", "png", "html"), display = "dropdown", text = "Descargar")
+      else   dsmodules::downloadImageUI("download_map", dropdownLabel ="Download", formats = c("jpeg", "pdf", "png", "html"), display = "dropdown", text = "Descargar")
+
+     } else {
+        dsmodules::downloadTableUI("dropdown_table", dropdownLabel = "Download", formats = c("csv", "xlsx", "json"), display = "dropdown", text = "Descargar")
     }
   })
 
    dsmodules::downloadTableServer("dropdown_table", element = reactive( df_temp() ), formats = c("csv", "xlsx", "json"))
    dsmodules::downloadImageServer("download_viz", element = reactive(hgch_viz()), lib = "highcharter", formats = c("jpeg", "pdf", "png", "html"), file_prefix = "plot")
+   dsmodules::downloadImageServer("download_map", element = reactive(r_viz()), lib = "highcharter", formats = c("jpeg", "pdf", "png", "html"), file_prefix = "plot")
 
 
   output$viz <- renderUI({
@@ -586,17 +613,57 @@ viz_opts <- reactive({
   })
 
 
-  output$side_table <- renderUI({
+   output$side_table <- renderUI({
     tryCatch({
+
+
         req(quest_choose())
         req(df_temp())
+        if (actual_but$active == "map") {
+          #print(input$r_viz_shape_click$id)
+          df_filtered <- filter_r(df_temp(),"Country",input$r_viz_shape_click$id)
+        }
+        # else{  df_filtered  <- df_temp() }
+
+          if (actual_but$active == "treemap") {
+            if(is.null(input$hcClickedgraph$id)) return()
+            #print(input$hcClickedgraph$id)
+
+            df_filtered <- filter_r(df_temp(),"Country",input$hcClickedgraph$id)
+          }
+
+          if(actual_but$active =="bar"){
+            #print("into bar")
+            if(quest_choose()=="request" | quest_choose()=="appeals"){
+
+              if(is.null(input$hcClickedgraph$id)) return()
+              clickId <- gsub("<br/>", " ",input$hcClickedgraph$id)
+              #print(clickId)
+              df_filtered <- filter_r(df_temp(),"Status",clickId)
+            }
+            else{
+              if(is.null(input$hcClickedgraph$id)) return()
+              clickId <- gsub("<br/>", " ",input$hcClickedgraph$id)
+              #print(clickId)
+              df_filtered <- filter_r(df_temp(),"Vaccine",clickId)
+            }
+          }
+
+
+
+
+        ############################################
+
+
+        #####################################
+
         if(quest_choose()=="request") {
-          html_table_block(df_temp(),"Request..doc.")
+            html_table_block(df_filtered,"Request..doc.")
          }
          else{
-           if(quest_choose()=="contracts") { html_table_block(df_temp(),"Contracts") }
+           if(quest_choose()=="contracts") { html_table_block( df_filtered, "Contracts") }
            else {
-              if(quest_choose()=="appeals") { html_table_block(df_temp(),"Attachments") }
+              if(quest_choose()=="appeals") { html_table_block(df_filtered, "Attachments") }
            }
           }
 

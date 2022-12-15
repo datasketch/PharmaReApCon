@@ -15,7 +15,7 @@ get_year <- function(df, colname_to_year){
 # test_get_year = function(){
 #   dft=PharmaReApCon::get_data_api("request")
 #   dft=get_year(dft,"Submission.date..DD.MM.YYYY.")
-#    #####print(dft)
+#    ######print(dft)
 # }
 #
 #
@@ -26,8 +26,8 @@ get_year <- function(df, colname_to_year){
 #' @import dplyr
 #' @export
 counter_r <- function(df,colname_group1, colname_group2=NULL){
-  #####print(colname_group1)
-  #####print(names(df))
+  ######print(colname_group1)
+  ######print(names(df))
   if(is.null(colname_group2)){
     df <- df %>% group_by(across(all_of(colname_group1))) %>% summarize(count =n())
   }else{
@@ -53,8 +53,8 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 
    df <- get_data_api(df_name) #chance to  get filter data as parameter
    l  <-  df %>% dplyr::distinct(across(all_of(filter_var)))
-   #print("l")
-   #print(l)
+   ##print("l")
+   ##print(l)
    if(orderasc==TRUE) l  <-  l %>% dplyr::arrange(across(all_of(filter_var)))
    if(orderdesc==TRUE) l  <-  l %>% dplyr::arrange(across(all_of(filter_var)))
    l
@@ -81,7 +81,7 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 #' @import dplyr
 #' @export
 request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL,supplier_fil=NULL,vaccine_fil=NULL, type="line"){
-  # print("into data graph")
+  # #print("into data graph")
 
   df <- get_data_api(name)
 
@@ -103,44 +103,44 @@ request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=N
 if(!is.null(vaccine_fil)){
   df <- filter_r(df,"Vaccine",vaccine_fil)
 }
-  # print("df-get")
-  # print(df)
+  # #print("df-get")
+  # #print(df)
 
   if(type=="bar"){
-     #print("into bar")
+     ##print("into bar")
     if(name=="request" | name=="appeals"){
-      #print("intorequest")
-      #print(df)
+      ##print("intorequest")
+      ##print(df)
       total <- counter_r(df,"Status")
-      #print(total)
+      ##print(total)
       total <- df_color_tree(total,"Status")
 
-      #print(total)
+      ##print(total)
     }
     else{
-      #print("contract")
+      ##print("contract")
       total <- counter_r(df,"Vaccine")
-      #print("total")
-      #print(total)
+      ##print("total")
+      ##print(total)
       #########
       total <- total %>% mutate(Vaccine = case_when(is.na(Vaccine) | Vaccine=="" ~ "(NA)", TRUE ~ Vaccine))
-      #print("total2")
-      #print(total)
+      ##print("total2")
+      ##print(total)
       ############
       total <-  df_color_tree(total,"Vaccine")
-      #print("total3")
-      #print(total)
+      ##print("total3")
+      ##print(total)
 
     }
 
    }
   else{
-    # print("total")
+    # #print("total")
     total  <-   counter_r(df,"Country")
-    print(total)
-    # print("total color")
+    #print(total)
+    # #print("total color")
     total  <-  df_color_tree(total,"Country")
-    print(total)
+    #print(total)
 
   }
 
@@ -209,23 +209,23 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
 #TODO group by count distinct
 #' @export
 df_color_tree <- function(df, col_to_color,pallete="Pubu"){
-  #print("into color tree")
+  ##print("into color tree")
   coloresFuente  <-  df %>%  dplyr::distinct(across(all_of(col_to_color)))
-  # print("colores")
+  # #print("colores")
   b <- nrow(coloresFuente)
-  # print(b)
+  # #print(b)
   if(b>1)   color_tree  <- hcl.colors(b,palette = "green-orange")
   else color_tree = c("#11C638")
-  # print(color_tree)
+  # #print(color_tree)
   vart <- vector()
   vart <- append(vart,color_tree)
 
   coloresFuente <- as.data.frame(cbind(coloresFuente,vart))
-  # print(coloresFuente)
+  # #print(coloresFuente)
   colnames(coloresFuente)  <-  c(col_to_color,"...colors")
   df <- df %>% dplyr::left_join(coloresFuente, copy=TRUE)
-  # print("df")
-  # print(df)
+  # #print("df")
+  # #print(df)
   df
 }
 
@@ -246,7 +246,7 @@ df_color_tree <- function(df, col_to_color,pallete="Pubu"){
 
 #' @export
 show_map<- function(df){
-
+  # myFunc <- paste0("function(event) {Shiny.onInputChange('", 'hcClickedmap', "', {id:event.point.name, timestamp: new Date().getTime()});}")
   l  <- list(df,
            # map_name = "col_larg",
            map_tiles = "CartoDB",
@@ -254,15 +254,20 @@ show_map<- function(df){
            title_size = 11,
            text_family = "Fira Sans",
            title_family = "Fira Sans",
-           # tooltip = paste0("<b>{depto}</b><br/>",
+           na_color = "transparent",
+           grid_y_color = "#dbd9d9",
+           grid_x_color = "#fafafa",
+           border_weight = 0.3,
+           # tooltip ="{Country}",# paste0("<b>{depto}</b><br/>",
            #                  "Total: {Total2}<br/>
            #                                                   PORCENTAJE: {Porcentaje}"),
+           # cursor="pointer",
            legend_show = F,
            # map_zoom = F,
-           map_min_zoom = -5,
-           map_max_zoom = 20,
-           caption = "",
-
+           # map_min_zoom = -5,
+           # map_max_zoom = 20,
+           # caption = "",
+           # clickFunction = htmlwidgets::JS(myFunc),
            background_color = "#ffffff",
            palette_colors = rev(c("#ef4e00", "#f66a02", "#fb8412", "#fd9d29", "#ffb446", "#ffca6b", "#ffdf98")))
 
@@ -273,7 +278,10 @@ show_map<- function(df){
 
 #' @export
 show_bar = function(df, color_by_input=NULL,tooltip_t=NULL){
-  l <-list(
+  #print(df)
+  myFunc <- paste0("function(event) {Shiny.onInputChange('", 'hcClickedgraph', "', {id:event.point.name, timestamp: new Date().getTime()});}")
+
+   l <-list(
       data = df,
       # title = titleviz(),
       title_size = 15,
@@ -287,6 +295,9 @@ show_bar = function(df, color_by_input=NULL,tooltip_t=NULL){
       # format_sample_num = "10T",
       format_numericSymbols = T,
       color_by= color_by_input,
+      clickFunction = htmlwidgets::JS(myFunc),
+      grid_y_color = "#dbd9d9",
+      grid_x_color = "#fafafa",
       #prefix="$",
       # tooltip = tooltip_t,
       legend_maxHeight = 100,
@@ -351,7 +362,7 @@ html_table_block <- function(da,param){
 
      }
       else {
-        ##print("entri3")
+        ###print("entri3")
         v <- append(v,paste0("<B>",colnames(da[i]),"</B>",": ", da[j,i]))
 
       }
@@ -373,7 +384,7 @@ paste_url_tag <- function(head, url) {
 #' @export
 to_url_link <- function(a){
     # a= "victima(1).pdf( http:1) ( http:2"
-  # ##print("##############################################################")
+  # ###print("##############################################################")
   a <- str_replace_all(a,"\\([1-9]\\)","")
   a <- str_replace_all(a,"[' ']","")
   b <- str_replace_all(a,"[(]"," ")

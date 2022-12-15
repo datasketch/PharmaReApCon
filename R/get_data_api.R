@@ -28,6 +28,7 @@ get_data_api <- function(name,selector=NULL){
         request$Request..doc.[i] <-  temp
         # #print(temp)
       }
+
     }
 
     b <- as.data.frame(countries$tbl6WB3ZHH9d7ZicJ$select())
@@ -36,7 +37,7 @@ get_data_api <- function(name,selector=NULL){
     request <- request %>% rename(country_id=Country, Country= Country.y)
     #print(result)
     request <- request |> select(!c(country_id,`Request (doc)`))
-
+    request <- request |> rename(`Submission date` = `Submission date (DD/MM/YYYY)`)
     # load("data/request.rda") #csv version
     result <- request
     rm(request)
