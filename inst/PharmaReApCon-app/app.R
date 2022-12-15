@@ -25,7 +25,7 @@ ui <- function(request) {
       shinypanels::panel(title = "Filters",
                          id = "azul",
                          color="#6fcbff",
-                         width = 250,
+                         width = 285,
                            body = div(
                              tags$head(tags$script(src="handlers.js")),
                            div(style = "!important;margin-bottom: 1%;",
@@ -49,22 +49,23 @@ ui <- function(request) {
       ),
       shinypanels::panel(title = "Visualization",
                          id = "naranja",
+                         width = 661,
+                         color="#6fcbff",
                          # background= "viz_icons/Background-ds@2x.png",
                          header_right = div(class="flex-container",style="display:flex;",
                                             div(class="flex-item-left",uiOutput("viz_icons")),
                                             div(class="flex-item-right",uiOutput("descargas"))
                          ),
                          can_collapse = FALSE,
-                         color = "chardonnay",
                          body = div(shinybusy::add_busy_spinner(spin = "fading-circle"),
                                     uiOutput("viz")
                          )
       ),
       shinypanels::panel(title = "Details",
                          id="verde",
-                         width = 300,
+                         width = 285,
                          body=
-                         div(style="flex-grow: 1; max-width: 300px;overflow: scroll;max-height: 620px",
+                         div(style="flex-grow: 1; max-width: 285px;overflow: scroll;max-height: 620px",
                              htmlOutput("side_table")
                          ),
                          footer =  div(style = "display:flex;gap:40px",
