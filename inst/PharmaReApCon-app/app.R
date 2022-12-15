@@ -294,8 +294,9 @@ viz_opts <- reactive({
 
      selectizeInput("sel_country","Country",
                      df,
-                     default_select, multiple=TRUE, width='200px')
+                     default_select, multiple=TRUE, width='200px', options = list(plugins= list('remove_button')))
     }
+
 
   })
 
@@ -307,7 +308,7 @@ viz_opts <- reactive({
       df <- filter_make("request","Status",orderasc=TRUE)
       selectizeInput("sel_status","Status",
                      df,
-                     default_select, multiple=TRUE, width='200px')
+                     default_select, multiple=TRUE, width='200px', options = list(plugins= list('remove_button')))
    }
 
   })
@@ -326,7 +327,7 @@ viz_opts <- reactive({
 
     selectizeInput("sel_country_ap","Country",
                    df,
-                   default_select, multiple=TRUE, width='200px')
+                   default_select, multiple=TRUE, width='200px', options = list(plugins= list('remove_button')))
     }
 
   })
@@ -341,7 +342,7 @@ viz_opts <- reactive({
 
      selectizeInput("sel_status_ap","Status",
                    df,
-                   default_select, multiple=TRUE, width='200px')
+                   default_select, multiple=TRUE, width='200px', options = list(plugins= list('remove_button')))
     }
 
   })
@@ -360,7 +361,7 @@ viz_opts <- reactive({
 
       selectizeInput("sel_country_ct","Country",
                      df,
-                     default_select, multiple=TRUE, width='200px')
+                     default_select, multiple=TRUE, width='200px', options = list(plugins= list('remove_button')))
     }
 
   })
@@ -376,7 +377,7 @@ viz_opts <- reactive({
 
       selectizeInput("sel_supplier_ct","Supplier",
                      df,
-                     default_select, multiple=TRUE, width='200px')
+                     default_select, multiple=TRUE, width='200px', options = list(plugins= list('remove_button')))
     }
 
   })
@@ -393,7 +394,7 @@ viz_opts <- reactive({
 
       selectizeInput("sel_vaccine_ct","Vaccine",
                      df,
-                     default_select, multiple=TRUE, width='200px')
+                     default_select, multiple=TRUE, width='200px', options = list(plugins= list('remove_button')))
     }
 
   })
