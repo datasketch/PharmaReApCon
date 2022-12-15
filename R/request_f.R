@@ -81,7 +81,8 @@ filter_make <-function(df_name,filter_var, orderasc=FALSE, orderdesc=FALSE){
 #' @import dplyr
 #' @export
 request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=NULL,supplier_fil=NULL,vaccine_fil=NULL, type="line"){
-  #print("into data graph")
+  # print("into data graph")
+
   df <- get_data_api(name)
 
   total  <- NULL
@@ -102,7 +103,8 @@ request_country_get_data_graph <- function(name,  country_fil=NULL, status_fil=N
 if(!is.null(vaccine_fil)){
   df <- filter_r(df,"Vaccine",vaccine_fil)
 }
-
+  # print("df-get")
+  # print(df)
 
   if(type=="bar"){
      #print("into bar")
@@ -133,9 +135,12 @@ if(!is.null(vaccine_fil)){
 
    }
   else{
-
+    # print("total")
     total  <-   counter_r(df,"Country")
+    print(total)
+    # print("total color")
     total  <-  df_color_tree(total,"Country")
+    print(total)
 
   }
 
@@ -206,21 +211,21 @@ request_country_get_data_table <- function(name,  country_fil=NULL, status_fil=N
 df_color_tree <- function(df, col_to_color,pallete="Pubu"){
   #print("into color tree")
   coloresFuente  <-  df %>%  dplyr::distinct(across(all_of(col_to_color)))
-  #print("colores")
+  # print("colores")
   b <- nrow(coloresFuente)
-  #print(b)
-  if(b>1)   color_tree  <- hcl.colors(1,palette = "green-orange")
+  # print(b)
+  if(b>1)   color_tree  <- hcl.colors(b,palette = "green-orange")
   else color_tree = c("#11C638")
-  #print(color_tree)
+  # print(color_tree)
   vart <- vector()
   vart <- append(vart,color_tree)
 
   coloresFuente <- as.data.frame(cbind(coloresFuente,vart))
-  #print(coloresFuente)
+  # print(coloresFuente)
   colnames(coloresFuente)  <-  c(col_to_color,"...colors")
   df <- df %>% dplyr::left_join(coloresFuente, copy=TRUE)
-  #print("df")
-  #print(df)
+  # print("df")
+  # print(df)
   df
 }
 

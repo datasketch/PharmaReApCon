@@ -224,10 +224,12 @@ viz_opts <- reactive({
 
 
       if(actual_but$active=="treemap"){
-
+        # print("df")
         df <- request_country_get_data_graph(quest_choose(),vart_country,vart_status,vart_supplier, vart_vaccine, type="treemap")
-
+        # print(df)
+        #  print("l")
           l <- show_bar(df, "Country",paste0("Country: ","{Country} Total {count}"))
+          print(l)
 
 
       }
@@ -477,13 +479,13 @@ viz_opts <- reactive({
 
 
   output$hgch_viz <- highcharter::renderHighchart({
-    tryCatch({
-      req( hgch_viz())
+    # tryCatch({
+     req( hgch_viz())
       hgch_viz()
-    },
-    error = function(cond) {
-      return()
-    })
+    # },
+    # error = function(cond) {
+    #   return()
+    # })
   })
 
 
